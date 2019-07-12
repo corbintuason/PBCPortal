@@ -1,0 +1,59 @@
+
+// Body
+$body-bg: #f8fafc;
+
+// Typography
+$font-family-sans-serif: "Nunito", sans-serif;
+$font-size-base: 0.9rem;
+$line-height-base: 1.6;
+
+// Colors
+$blue: #3490dc;
+$indigo: #6574cd;
+$purple: #9561e2;
+$pink: #f66D9b;
+$red: #e3342f;
+$orange: #f6993f;
+$yellow: #ffed4a;
+$green: #38c172;
+$teal: #4dc0b5;
+$cyan: #6cb2eb;
+
+.blue{
+    color: $blue;
+}
+
+.red{
+    color: $red;
+}
+
+.green{
+    color: $green;
+}
+
+.row-title{
+    font-size: 1.5vw;
+    margin-bottom: 20px;
+    font-weight: bold;
+}
+
+.row-sub-category{
+    font-size: 1.3vw;
+}
+
+.card-header{
+    display: table;
+    overflow: hidden;
+}
+
+.card-title{
+    display: table-cell;
+    vertical-align: middle;
+}
+.card-tools{
+    display: table-cell;
+    vertical-align: middle;
+}
+
+
+
