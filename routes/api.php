@@ -56,6 +56,10 @@ Route::apiResources([
 ]);
 
 Route::apiResources([
+    'donation_list' => 'API\DonationListController'
+]);
+
+Route::apiResources([
     'agency' => 'API\AgencyController'
 ]);
 

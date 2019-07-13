@@ -77,6 +77,7 @@ class BloodUnitController extends Controller
     public function update(Request $request, $id)
     {
         $blood_unit = BloodUnit::findOrFail($id);
+        
         $this->validate($request,[
             'status' => 'required|string|max:191',
          ]);

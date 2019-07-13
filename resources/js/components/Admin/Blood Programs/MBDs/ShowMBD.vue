@@ -32,7 +32,6 @@
                     <div class="col-md-6">
                       <div class="btn-group" role="group">
                         <button type="button" class="btn btn-light" @click="showDonors">Donors</button>
-                        <button type="button" class="btn btn-light" @click="showSchedule">Scheduling</button>
                         <button type="button" class="btn btn-dark" @click="showManpower">Manpower</button>
                         <button type="button" class="btn btn-light" @click="showEquipment">Equipment</button>
                       </div>

@@ -69,7 +69,7 @@
       </div>
 
       <div class="row-title">Donation History</div>
-      <div v-if="donations.length">
+      <div v-if="donor.donations.length">
         <div class="row donor-short-profile">
           <div class="col-md-4">Total Donations: 0</div>
           <div class="col-md-4">Successful Donations: 30</div>
@@ -85,8 +85,8 @@
               </tr>
             </thead>
             <tbody>
-              <tr v-for="donation in donations" :key="donation.id">
-                <td>{{donation.donation_id}}</td>
+              <tr v-for="donation in donor.donations" :key="donation.id">
+                <td>{{donation.id}}</td>
                 <td>{{donation.status}}</td>
                 <td>{{donation.created_at}}</td>
               </tr>
@@ -113,6 +113,7 @@ export default {
   },
   props: {
     donor: Object,
+
   },
   methods: {
     close() {

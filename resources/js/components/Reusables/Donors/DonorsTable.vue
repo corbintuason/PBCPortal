@@ -10,6 +10,7 @@
       </tr>
     </thead>
     <tbody>
+
       <tr v-for="donor in donors" :key="donor.id">
         <td><a href = "#" @click="showDonorModal(donor)"> {{donor.id}} </a> </td>
         <td>{{donor.last_name}}</td>
@@ -19,19 +20,18 @@
       </tr>
     </tbody>
   </table>
-<donor-modal :donor="modal_donor" :donations="modal_donations"> </donor-modal>
+<donor-modal v-if="modal_donor != null" :donor="modal_donor"> </donor-modal>
 
 </div>
  
 </template>
 
 <script>
-import donorModal from 'C:/xampp/htdocs/PBCPortal/resources/js/components/reusables/DonorModal.vue';
+import donorModal from 'C:/xampp/htdocs/PBCPortal/resources/js/components/Reusables/DonorModal.vue';
 export default {
   data() {
     return {
-        modal_donor: {},
-        modal_donations: [],
+        modal_donor: null,
         selected_donor:{},
 
     };
@@ -49,16 +49,11 @@ export default {
     }
   },
   methods:{
-          showDonorModal(donor){
-      this.modal_donor = donor;
-      axios
-        .get("/api/blood_unit",{
-          params: {
-            donor_id: this.modal_donor.donor_id
-          }
-        })
-        .then(response => (this.modal_donations = response.data.data))
-      this.$bvModal.show('donor-modal');
+      showDonorModal(donor){
+      this.modal_donor = donor    
+            this.$bvModal.show('donor-modal');
+    },
+    openModal(){
     }
   }
 };

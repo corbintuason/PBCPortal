@@ -4,11 +4,11 @@ namespace App\Http\Controllers\API;
 
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
-use App\DonorList;
-use App\Http\Resources\DonorList as DonorListResource;
-use App\Http\Resources\DonorListCollection;
+use App\DonationList;
+use App\Http\Resources\DonationList as DonationListResource;
+use App\Http\Resources\DonationListCollection;
 
-class DonorListController extends Controller
+class DonationListController extends Controller
 {
     /**
      * Display a listing of the resource.
@@ -17,11 +17,11 @@ class DonorListController extends Controller
      */
     public function index(Request $request)
     {
-        $query = DonorList::query();
+        $query = DonationList::query();
         if($request->get('id')){
         $query->where('id', $request->get('id'));
      }
-     return new DonorListCollection($query->get());
+     return new DonationListCollection($query->get());
     }
 
     /**
@@ -43,7 +43,7 @@ class DonorListController extends Controller
      */
     public function show($id)
     {
-        return new DonorListResource(DonorList::findOrFail($id));
+        return new DonationListResource(DonationList::findOrFail($id));
     }
 
     /**

@@ -18,29 +18,31 @@
                     <thead>
                       <tr>
                         <th>#</th>
-                        <th>Donation ID</th>
+                        <th>Donation Code</th>
                         <th>ABO</th>
                         <th>Rh Type</th>
                       </tr>
                     </thead>
-                    <tbody>
+                    <tbody v-if="typing_blood_units.length">
                       <!-- NVBSP20180000453-->
                       <tr
-                        v-for="(registered_blood_unit, index) in registered_blood_units"
+                        v-for="(donated_blood_unit, index) in donated_blood_units"
                         :key="index"
                       >
-                        <td>{{registered_blood_unit.id}}</td>
-                        <td>{{registered_blood_unit.donation_id}}</td>
+                        <td>{{index+1}}</td>
+                        <td>{{donated_blood_unit.code}}</td>
                         <td>
-                          <select class="custom-select" v-model="typing_blood_unit[index].ABO">
+                          {{typing_blood_units[index]}}
+                          <select class="custom-select" v-model="typing_blood_units[index].ABO">
                             <option disabled value>Please select one</option>
                             <option value="A">A</option>
                             <option value="B">B</option>
+                            <option value="AB">AB</option>
                             <option value="O">O</option>
                           </select>
                         </td>
                         <td>
-                          <select class="custom-select" v-model="typing_blood_unit[index].rh_type">
+                          <select class="custom-select" v-model="typing_blood_units[index].rh_type">
                             <option disabled value>Please select one</option>
                             <option value="+">+</option>
                             <option value="-">-</option>
@@ -55,14 +57,13 @@
                   <div class="card-tools">
                     <button
                       type="button"
-                      @click="completeTyping"
+                      @click="typeBlood"
                       class="btn btn-success float-right"
                     >Update</button>
                   </div>
                 </div>
               </div>
-              {{typing_blood_unit}}
-     
+                
               <!-- </form> -->
             </div>
           </div>
@@ -76,73 +77,78 @@
 export default {
   data() {
     return {
-      typing_blood_unit: [],
+      typing_blood_units: [],
       //  typing_blood_unit: new Form({
 
       // }),
-      registered_blood_units: []
+      donated_blood_units: []
     };
   },
   methods: {
     populateUnits(index) {
-      for (var i = 0; i < index; i++) {
-        var matching_donation_id = this.registered_blood_units[i].donation_id;
-        let matching_id = this.registered_blood_units.find(obj => obj.donation_id == matching_donation_id).id;       
-        console.log(matching_donation_id);
-        console.log(matching_id);
-        this.typing_blood_unit.push({
-          donation_id: matching_donation_id,
-          id: matching_id,
+       this.donated_blood_units.forEach((val, index)=>{
+        this.typing_blood_units.push({
+          id: val.id,
+          donation_code: val.donation_code,
           ABO: null,
           rh_type: null,
         });
-      }
+      })
     },
-    loadRegisteredUnits() {
+    loadDonatedUnits() {
       axios
         .get("/api/blood_unit",{
           params: {
-            status: "Registered"
+            status: "Donated"
           }
         })
-        .then(response => (this.registered_blood_units = response.data.data))
+        .then(response => (this.donated_blood_units = response.data.data))
         .then(() => {
-          this.populateUnits(this.registered_blood_units.length);
+          this.populateUnits();
         });
     },
-    completeTyping() {
-      this.typing_blood_unit.forEach(this.typeBlood);
-    },
-    updateToTyping(item, index) {
-      axios.put("/api/blood_unit/"+ item.id, {
-        status: "Typed"
-      });
-    },
-    typeBlood(item, index) {
-      this.updateToTyping(item, index);
-      axios
-        .post("/api/typed_blood_unit", {
-          donation_id: this.typing_blood_unit[index].donation_id,
-          ABO: this.typing_blood_unit[index].ABO,
-          rh_type: this.typing_blood_unit[index].rh_type
-        })
-        .then(() => {
-          // this.typing_blood_unit.post("/api/typing_blood_unit").then(() => {
+     typeBlood() {
+      /* 1. Process Array of Blood Units to Processing */
+      /* 
+      MULTIPLE SMALL POST REQUEST
+     */
+      this.typing_blood_units
+        .forEach((val, index) => {
+          console.log(this.donated_blood_units[index].id);
+          axios
+            .post("/api/typed_blood_unit", {
+              ABO: val.ABO,
+              rh_type: val.rh_type,
+              blood_unit_id: this.donated_blood_units[index].id
+            })
 
+            /* 2. Update status of Blood Units to Processing */
+            .then(() => {
+            this.updateToTyped(val);
+            }).catch( err =>{console.log(err);});
+        });
+         
+          /* 3. Activate Toast to display that Processing of Blood is Finished */
           this.$Progress.start();
-
-          // Activate Toast
           toast.fire({
             type: "success",
             title: "Blood Unit Typed"
           });
           this.$Progress.finish();
-        }).then(() => {this.loadRegisteredUnits()});
-    }
+          this.loadDonatedUnits();
+
+    },
+    // Updates Blood Unit to Processed
+    updateToTyped(unit) {
+      axios.put("/api/blood_unit/" + unit.id, {
+        status: "Typed"
+      });
+    },
+    
   },
 
   created() {
-    this.loadRegisteredUnits();
+    this.loadDonatedUnits();
 
     console.log("loaded");
   }

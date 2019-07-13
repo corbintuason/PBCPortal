@@ -15,10 +15,9 @@ class CreateBloodUnitsTable extends Migration
     {
         Schema::create('blood_units', function (Blueprint $table) {
             $table->bigIncrements('id');
-            $table->string('donation_id');
-            $table->string('status')->default('Registered');
-            $table->string('quantity');
-            $table->string('donor_id');
+            $table->integer('donation_id')->nullable()->unsigned();
+            $table->string('code');
+            $table->string('status')->default('Donated');
             $table->timestamps();
         });
     }

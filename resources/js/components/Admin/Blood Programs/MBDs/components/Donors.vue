@@ -17,9 +17,9 @@
         <button @click="showAddDonor" class="float-right btn btn-success">Add Donation</button>
       </div>
     </div>
-    <donor-modal
+    <!-- <donor-modal 
       :donor="modal_donor"
-    ></donor-modal>
+    ></donor-modal> -->
     <add-donation :MBDName="MBDName"> </add-donation>
   </div>
 </template>
@@ -56,14 +56,14 @@ export default {
       this.modal_donor = donor;
       this.$bvModal.show('donor-modal');
     },
-    loadDonors() {
-      axios.get("/api/donor_lists/", {
-        params: {}
-      });
-    }
+    // showDonorsInDate(donor){
+    //   axios.get('/api/user', {
+    //     params:{
+    //     }
+    //   });
+    // }
   },
   created() {
-    this.loadDonors();
   }
 };
 </script>

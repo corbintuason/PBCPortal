@@ -14,6 +14,11 @@ class TypedBloodUnit extends JsonResource
      */
     public function toArray($request)
     {
-        return parent::toArray($request);
+        return [
+            'id' => $this->id,
+            'ABO' => $this->ABO,
+            'rh_type' => $this->rh_type,
+            'blood_unit_id' => $this->blood_unit_id
+        ];
     }
 }

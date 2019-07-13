@@ -72,8 +72,8 @@ let routes = [
     // /**1.) Blood Unit  */
 
     // { path: '/bloodInventory/registerUnit', component: require('./components/pages/Blood Inventory/Blood Unit/RegisterBloodUnit.vue').default },
-    // { path: '/bloodInventory/bloodTyping', component: require('./components/pages/Blood Inventory/Blood Unit/BloodTyping.vue').default },
-    // { path: '/bloodInventory/bloodProcessing', component: require('./components/pages/Blood Inventory/Blood Unit/BloodProcessing.vue').default },
+    { path: '/bloodInventory/bloodTyping', component: require('./components/Admin/Blood Inventory/Blood Unit/BloodTyping.vue').default },
+    { path: '/bloodInventory/bloodProcessing', component: require('./components/Admin/Blood Inventory/Blood Unit/BloodProcessing.vue').default },
     // { path: '/bloodInventory/bloodTesting', component: require('./components/pages/Blood Inventory/Blood Unit/BloodTesting.vue').default },
     // { path: '/bloodInventory/bloodReactions', component: require('./components/pages/Blood Inventory/Blood Unit/BloodReactions.vue').default },
     // { path: '/bloodInventory/bloodDiscard', component: require('./components/pages/Blood Inventory/Blood Unit/BloodDiscard.vue').default },

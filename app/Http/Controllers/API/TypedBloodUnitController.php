@@ -31,12 +31,12 @@ class TypedBloodUnitController extends Controller
     public function store(Request $request)
     {
         $this->validate($request,[
-           'blood_unit_id' => 'required|string|max:191',
+           'blood_unit_id' => 'required|integer',
            'ABO' => 'required|string',
            'rh_type' => 'required|string',
         ]);
         return TypedBloodUnit::create([
-            'blood_unit_id' => $request['donation_id'],
+            'blood_unit_id' => $request['blood_unit_id'],
             'ABO' => $request['ABO'],
             'rh_type' => $request['rh_type']
         ]);

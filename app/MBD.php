@@ -5,6 +5,7 @@ namespace App;
 use Illuminate\Database\Eloquent\Model;
 use App\Agency;
 use App\DonationList;
+
 class MBD extends Model
 {
      // Primary Key 

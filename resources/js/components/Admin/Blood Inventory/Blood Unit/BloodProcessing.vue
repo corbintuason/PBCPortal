@@ -18,9 +18,8 @@
                       <thead>
                         <tr>
                           <th>#</th>
-                          <th>Donation ID</th>
+                          <th>Donation Code</th>
                           <th>Blood Type</th>
-                          <th>Blood Bag</th>
                           <th>Whole Blood</th>
                           <th>Packed RBC</th>
                           <th>Platelet Concentrate</th>
@@ -33,7 +32,7 @@
                         <!-- NVBSP20180000453-->
                          <tr v-for="(typed_blood_unit, index) in typed_blood_units" :key="index"> 
                           <td>{{typed_blood_unit.id}}</td>
-                          <td>{{typed_blood_unit.donation_id}}</td>
+                          <td>{{typed_blood_unit.donation_code}}</td>
                           <td>{{typed_blood_unit.blood_type}}</td>
                           <td>{{typed_blood_unit.quantity}}</td>
                           <td>

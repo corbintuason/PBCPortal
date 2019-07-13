@@ -3,6 +3,7 @@
 namespace App\Http\Resources;
 
 use Illuminate\Http\Resources\Json\JsonResource;
+use App\Http\Resources\TypedBloodUnit as TypedBloodUnitResource;
 
 class BloodUnit extends JsonResource
 {
@@ -17,15 +18,11 @@ class BloodUnit extends JsonResource
         return[
             'id' => $this->id,
             'donation_id' => $this->donation_id,
-            'whole_blood' => $this->whole_blood,
+            'code' => $this->code,
             'status' => $this->status,
-            'quantity' => $this->quantity,
-            'donor_id' => $this->donor_id,
-            'blood_type' => $this->typed_blood_unit["ABO"].$this->typed_blood_unit["rh_type"],
+            
+            'typed_blood_unit' => new TypedBloodUnitResource($this->typed_blood_unit)
 
-            'typed_blood_unit' => $this->typed_blood_unit,
-            'processed_blood_unit' => $this->processed_blood_unit,
-            'tested_blood_unit' => $this->tested_blood_unit
         ];
     }
 

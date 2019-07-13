@@ -18,14 +18,13 @@ class User extends JsonResource
         // $role = $this->roles[0]->name;
         return [
             'id' => $this->id,  
-            'donor_id' => $this->donor_id,
             'first_name' => $this->first_name,
             'last_name' => $this->last_name,
             'email' => $this->email,
             'full_name' => $this->last_name . ", " . $this->first_name,
 
             'personal_details' => $this->donor_personal_details,
-            'donations' => new DonationCollection($this->donations)
+            'donations' => $this->donations
           ];    
     }
 }

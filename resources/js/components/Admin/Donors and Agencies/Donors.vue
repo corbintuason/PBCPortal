@@ -46,7 +46,7 @@
 </template>
 
 <script>
-import donorModal from "C:/xampp/htdocs/PBCPortal/resources/js/components/reusables/DonorModal.vue";
+import donorModal from "C:/xampp/htdocs/PBCPortal/resources/js/components/Reusables/DonorModal.vue";
 export default {
   data() {
     return {

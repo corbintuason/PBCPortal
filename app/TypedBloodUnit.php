@@ -14,6 +14,10 @@ class TypedBloodUnit extends Model
      public $timestamps = true;
      
      protected $fillable =[
-     'ABO', 'rh_type', 'donation_id'
+     'ABO', 'rh_type', 'donation_code'
      ];
+
+     public function blood_unit(){
+          return $this->belongsTo(App\BloodUnit::class);
+     }
 }

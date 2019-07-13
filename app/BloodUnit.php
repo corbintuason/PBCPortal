@@ -15,12 +15,12 @@ class BloodUnit extends Model
      public $timestamps = true;
      
      protected $fillable =[
-     'donation_id', 'status', 'donor_id', 'quantity'
+     'donation_id', 'status'
      ];
 
 
      public function typed_blood_unit(){
-          return $this->hasOne(TypedBloodUnit::class, 'blood_unit_id');
+          return $this->hasOne(TypedBloodUnit::class);
      }
 
      public function processed_blood_unit(){

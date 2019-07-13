@@ -19,6 +19,7 @@ class DonationList extends JsonResource
             'id' => $this->id,
             'donation_id' => $this->donation_id,
             'mbd_id' => $this->mbd_id,
+            
             'donation' => new DonationResource($this->donation),
         ];
     }
