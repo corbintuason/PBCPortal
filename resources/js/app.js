@@ -74,7 +74,7 @@ let routes = [
     // { path: '/bloodInventory/registerUnit', component: require('./components/pages/Blood Inventory/Blood Unit/RegisterBloodUnit.vue').default },
     { path: '/bloodInventory/bloodTyping', component: require('./components/Admin/Blood Inventory/Blood Unit/BloodTyping.vue').default },
     { path: '/bloodInventory/bloodProcessing', component: require('./components/Admin/Blood Inventory/Blood Unit/BloodProcessing.vue').default },
-    // { path: '/bloodInventory/bloodTesting', component: require('./components/pages/Blood Inventory/Blood Unit/BloodTesting.vue').default },
+    { path: '/bloodInventory/bloodTesting', component: require('./components/Admin/Blood Inventory/Blood Unit/BloodTesting.vue').default },
     // { path: '/bloodInventory/bloodReactions', component: require('./components/pages/Blood Inventory/Blood Unit/BloodReactions.vue').default },
     // { path: '/bloodInventory/bloodDiscard', component: require('./components/pages/Blood Inventory/Blood Unit/BloodDiscard.vue').default },
 
@@ -82,8 +82,8 @@ let routes = [
 
     // /** PATHS TO DONORS AND AGENCIES */
 
-    // { path: '/donorsAgencies/donors', component: require('./components/pages/Donors and Agencies/Donors.vue').default },
-    // { path: '/donorsAgencies/agencies', component: require('./components/pages/Donors and Agencies/Agencies.vue').default },
+    { path: '/donorsAgencies/donors', component: require('./components/Admin/Donors and Agencies/Donors.vue').default },
+    { path: '/donorsAgencies/agencies', component: require('./components/Admin/Donors and Agencies/Agencies.vue').default },
     
     // /** PATHS TO BLOOD PROGRAMS */
     { path: '/bloodPrograms/MBDs', component: require('./components/Admin/Blood Programs/MBDs.vue').default },

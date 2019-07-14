@@ -23,7 +23,7 @@
         <div v-if="searchResults.length > 0">
           <div class="row-title">Search Results</div>
           <div class="row">
-            <donors-table :shouldSelect='true' :donors="searchResults" @donor_change="onDonorChange"> </donors-table>
+            <donors-table :shouldSelect='false' :donors="searchResults" @donor_change="onDonorChange"> </donors-table>
           </div>
         </div>
         <div v-else>

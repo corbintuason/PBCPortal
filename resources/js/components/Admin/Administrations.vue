@@ -32,9 +32,9 @@
                     <tbody>
                       <tr v-for="user in users" :key="user.id">
                         <td>{{user.id}}</td>
-                        <td>{{user.name}}</td>
+                        <td>{{user.full_name}}</td>
                         <td>{{user.email}}</td>
-                        <td>{{user.type}}</td>
+                        <td>{{user.job_title}}</td>
                         <td>
                           <a href="#">
                             <i class="fa fa-edit"></i>
@@ -144,7 +144,7 @@ export default {
   },
   methods: {
     loadUsers() {
-      axios.get("/api/user").then(({ data }) => (this.users = data.data));
+      axios.get("/api/admin").then(({ data }) => (this.users = data.data));
     },
     createUser() {
       this.user

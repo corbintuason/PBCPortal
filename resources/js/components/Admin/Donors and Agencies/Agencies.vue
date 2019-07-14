@@ -72,7 +72,6 @@
               <span aria-hidden="true">&times;</span>
             </button>
           </div>
-          <form @submit.prevent="createAgency">
             <div class="modal-body">
               <!-- Input Name -->
               <div class="form-group">
@@ -109,9 +108,9 @@
             </div>
             <div class="modal-footer">
               <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
-              <button type="submit" class="btn btn-primary">Create</button>
+              <button type="button" @click="createAgency" class="btn btn-primary">Create</button>
             </div>
-          </form>
+        
         </div>
       </div>
     </div>
@@ -136,8 +135,12 @@ export default {
       axios.get("/api/agency").then(({ data }) => (this.agencies = data.data));
     },
     createAgency() {
-      this.agency
-        .post("/api/agency")
+      axios
+        .post("/api/agency", {
+          name: this.agency.name,
+          email: this.agency.email,
+          address: this.agency.address
+        })
         .then(() => {
           this.$Progress.start();
           console.log("posting");

@@ -32,7 +32,7 @@
                   </form>
                   <hr />
                   <div v-if="donors_fetched">
-                    <donors-table :shouldSelect='false' :donors="donors"></donors-table>
+                    <donors-table :seeDonorProgress='seeDonorProgress' :shouldSelect='false' :donors="donors"></donors-table>
                   </div>
                 </div>
               </div>
@@ -41,12 +41,14 @@
         </div>
       </div>
     </div>
-    <donor-modal :donor="modal_donor" :donations="modal_donations"></donor-modal>
+    <donor-modal v-if="modal_donor!=null" :donor="modal_donor" :donations="modal_donations"></donor-modal>
   </div>
 </template>
 
 <script>
 import donorModal from "C:/xampp/htdocs/PBCPortal/resources/js/components/Reusables/DonorModal.vue";
+import donorsTable from 'C:/xampp/htdocs/PBCPortal/resources/js/components/reusables/Donors/DonorsTable.vue';
+
 export default {
   data() {
     return {
@@ -57,13 +59,18 @@ export default {
     };
   },
 
+  props:{
+    seeDonorProgress: Boolean,
+  },
+
   components: {
-    "donor-modal": donorModal
+    "donor-modal": donorModal,
+    "donors-table" : donorsTable
   },
   methods: {
     loadAllDonors() {
       axios
-        .get("/api/donor")
+        .get("/api/user")
         .then(response => (this.donors = response.data.data))
         .then(() => {
           this.donors_fetched = true;

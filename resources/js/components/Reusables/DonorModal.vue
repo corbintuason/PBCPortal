@@ -60,7 +60,7 @@
                 <td>{{donor.personal_details.occupation}}</td>
               </tr>
               <tr>
-                <th>Civil Status:</th>
+                <th>Nationality:</th>
                 <td>{{donor.personal_details.nationality}}</td>
               </tr>
             </tbody>
@@ -71,9 +71,9 @@
       <div class="row-title">Donation History</div>
       <div v-if="donor.donations.length">
         <div class="row donor-short-profile">
-          <div class="col-md-4">Total Donations: 0</div>
-          <div class="col-md-4">Successful Donations: 30</div>
-          <div class="col-md-4">Unsuccessful Donations: 0</div>
+          <div class="col-md-4">Total Donations: </div>
+          <div class="col-md-4">Successful Donations: </div>
+          <div class="col-md-4">Unsuccessful Donations: </div>
         </div>
         <div class="row">
           <table class="table table-hover">

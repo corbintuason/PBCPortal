@@ -12759,7 +12759,7 @@ __webpack_require__.r(__webpack_exports__);
     loadUsers: function loadUsers() {
       var _this = this;
 
-      axios.get("/api/user").then(function (_ref) {
+      axios.get("/api/admin").then(function (_ref) {
         var data = _ref.data;
         return _this.users = data.data;
       });
@@ -12808,7 +12808,6 @@ __webpack_require__.r(__webpack_exports__);
 __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var vuelidate_lib_validators__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! vuelidate/lib/validators */ "./node_modules/vuelidate/lib/validators/index.js");
 /* harmony import */ var vuelidate_lib_validators__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(vuelidate_lib_validators__WEBPACK_IMPORTED_MODULE_0__);
-//
 //
 //
 //
@@ -12991,13 +12990,13 @@ __webpack_require__.r(__webpack_exports__);
       */
       this.processing_blood_units.forEach(function (val, index) {
         axios.post("/api/processed_blood_unit", {
-          donation_id: val.donation_id,
           whole_blood: val.whole_blood,
           packed_rbc: val.packed_rbc,
           platelet_concentrate: val.platelet_concentrate,
           ffp: val.ffp,
           cryoprecipitate: val.cryoprecipitate,
-          cryosupernate: val.cryosupernate
+          cryosupernate: val.cryosupernate,
+          blood_unit_id: _this3.typed_blood_units[index].id
         })
         /* 2. Update status of Blood Units to Processing */
         .then(function () {
@@ -13014,6 +13013,7 @@ __webpack_require__.r(__webpack_exports__);
         title: "Blood Unit Processed"
       });
       this.$Progress.finish();
+      this.loadTypedUnits();
     },
     // Updates Blood Unit to Processed
     updateToProcessed: function updateToProcessed(unit) {
@@ -13024,6 +13024,252 @@ __webpack_require__.r(__webpack_exports__);
   },
   mounted: function mounted() {
     this.loadTypedUnits();
+    console.log("Component mounted.");
+  }
+});
+
+/***/ }),
+
+/***/ "./node_modules/babel-loader/lib/index.js?!./node_modules/vue-loader/lib/index.js?!./resources/js/components/Admin/Blood Inventory/Blood Unit/BloodTesting.vue?vue&type=script&lang=js&":
+/*!********************************************************************************************************************************************************************************************************!*\
+  !*** ./node_modules/babel-loader/lib??ref--4-0!./node_modules/vue-loader/lib??vue-loader-options!./resources/js/components/Admin/Blood Inventory/Blood Unit/BloodTesting.vue?vue&type=script&lang=js& ***!
+  \********************************************************************************************************************************************************************************************************/
+/*! exports provided: default */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+/* harmony default export */ __webpack_exports__["default"] = ({
+  data: function data() {
+    return {
+      testing_blood_units: [],
+      processed_blood_units: {},
+      data_fetched: false
+    };
+  },
+  methods: {
+    /* 
+    ~ [START] Page Load Methods ~
+    All methods 
+    */
+    // Populate Testing Units Array
+    populateTestingUnits: function populateTestingUnits() {
+      var _this = this;
+
+      this.processed_blood_units.forEach(function (val, index) {
+        _this.testing_blood_units.push({
+          id: val.id
+        });
+      }); // Sets Data_Fetched to True
+
+      this.data_fetched = true;
+    },
+    // Load Typed Blood Units from API to typed_blood_units array
+    loadProcessedUnits: function loadProcessedUnits() {
+      var _this2 = this;
+
+      axios.get("/api/blood_unit", {
+        params: {
+          status: "Processed"
+        }
+      }).then(function (response) {
+        return _this2.processed_blood_units = response.data.data;
+      }).then(function () {
+        console.log(_this2.processed_blood_units);
+
+        _this2.populateTestingUnits();
+      });
+    },
+
+    /* 
+    ~ [END] Page Load Methods ~
+    */
+
+    /*
+    [START] Blood Processing Methods 
+      SUMMARY:
+      1. Process Array of Blood Units to Testing
+      2. Update status of Blood Units to Testing
+      3. Activate Toast to display that Testing of Blood is Finished
+    */
+    bloodUnitPass: function bloodUnitPass(unit) {
+      console.log(unit.hbSag);
+      var hbSag = unit.hbSag;
+      var HCV = unit.HCV;
+      var HIV = unit.HIV;
+      var malaria = unit.malaria;
+      var syphilis = unit.syphilis;
+      if (hbSag && HCV && HIV && malaria && syphilis == "-") return true;else return false;
+    },
+    testBlood: function testBlood() {
+      var _this3 = this;
+
+      /* 1. Process Array of Blood Units to Processing */
+
+      /* 
+      ONE BIG SINGLE POST REQUEST      
+      this.processing_blood_unit.post("/api/processed_blood_unit").then(() => {   
+      */
+
+      /* 
+      MULTIPLE SMALL POST REQUEST
+      */
+      this.testing_blood_units.forEach(function (val, index) {
+        axios.post("/api/tested_blood_unit", {
+          hbSag: val.hbSag,
+          HCV: val.HCV,
+          HIV: val.HIV,
+          malaria: val.malaria,
+          syphilis: val.syphilis,
+          blood_unit_id: _this3.processed_blood_units[index].id
+        })
+        /* 2. Update status of Blood Units to Tested */
+        .then(function () {
+          var test_status;
+
+          if (_this3.bloodUnitPass(val)) {
+            test_status = "Stock";
+            console.log("pass dapat" + val.donation_id);
+
+            _this3.storeBloodUnit(val);
+          } else {
+            test_status = "Tested - Fail";
+          }
+
+          _this3.updateToTested(val, test_status);
+        })["catch"](function (err) {
+          console.log(err);
+        });
+      });
+      /* 3. Activate Toast to display that Processing of Blood is Finished */
+
+      this.$Progress.start();
+      toast.fire({
+        type: "success",
+        title: "Blood Unit Tested"
+      });
+      this.$Progress.finish();
+    },
+    // Updates Blood Unit to Processed
+    updateToTested: function updateToTested(unit, test_status) {
+      console.log(test_status);
+      axios.put("/api/blood_unit/" + unit.id, {
+        status: test_status
+      });
+    },
+    storeBloodUnit: function storeBloodUnit(unit) {
+      axios.post("/api/blood_stock", {
+        donation_id: unit.donation_id,
+        hbSag: unit.hbSag,
+        HCV: unit.HCV,
+        HIV: unit.HIV,
+        malaria: unit.malaria,
+        syphilis: unit.syphilis
+      });
+    }
+  },
+  mounted: function mounted() {
+    this.loadProcessedUnits();
     console.log("Component mounted.");
   }
 });
@@ -13686,7 +13932,8 @@ __webpack_require__.r(__webpack_exports__);
   props: {
     all_dates: Array,
     donors: Array,
-    MBDName: String
+    MBDName: String,
+    seeDonorProgress: Boolean
   },
   methods: {
     showAddDonor: function showAddDonor() {
@@ -14467,6 +14714,301 @@ __webpack_require__.r(__webpack_exports__);
     return {};
   },
   mounted: function mounted() {
+    console.log("Component mounted.");
+  }
+});
+
+/***/ }),
+
+/***/ "./node_modules/babel-loader/lib/index.js?!./node_modules/vue-loader/lib/index.js?!./resources/js/components/Admin/Donors and Agencies/Agencies.vue?vue&type=script&lang=js&":
+/*!*********************************************************************************************************************************************************************************************!*\
+  !*** ./node_modules/babel-loader/lib??ref--4-0!./node_modules/vue-loader/lib??vue-loader-options!./resources/js/components/Admin/Donors and Agencies/Agencies.vue?vue&type=script&lang=js& ***!
+  \*********************************************************************************************************************************************************************************************/
+/*! exports provided: default */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+/* harmony default export */ __webpack_exports__["default"] = ({
+  data: function data() {
+    return {
+      users: {},
+      agencies: {},
+      agency: {
+        name: "",
+        email: "",
+        address: ""
+      }
+    };
+  },
+  methods: {
+    loadAgencies: function loadAgencies() {
+      var _this = this;
+
+      axios.get("/api/agency").then(function (_ref) {
+        var data = _ref.data;
+        return _this.agencies = data.data;
+      });
+    },
+    createAgency: function createAgency() {
+      var _this2 = this;
+
+      axios.post("/api/agency", {
+        name: this.agency.name,
+        email: this.agency.email,
+        address: this.agency.address
+      }).then(function () {
+        _this2.$Progress.start();
+
+        console.log("posting");
+        Fire.$emit("AfterAgencyCreated");
+        console.log("posted");
+        $("#addAgency").modal("hide");
+        toast.fire({
+          type: "success",
+          title: "Agency created successfully"
+        });
+
+        _this2.$Progress.finish();
+      })["catch"](function () {
+        console.log("naku");
+      });
+    }
+  },
+  created: function created() {
+    var _this3 = this;
+
+    console.log("Component mounted.");
+    this.loadAgencies();
+    Fire.$on("AfterAgencyCreated", function () {
+      _this3.loadAgencies();
+    });
+  }
+});
+
+/***/ }),
+
+/***/ "./node_modules/babel-loader/lib/index.js?!./node_modules/vue-loader/lib/index.js?!./resources/js/components/Admin/Donors and Agencies/Donors.vue?vue&type=script&lang=js&":
+/*!*******************************************************************************************************************************************************************************************!*\
+  !*** ./node_modules/babel-loader/lib??ref--4-0!./node_modules/vue-loader/lib??vue-loader-options!./resources/js/components/Admin/Donors and Agencies/Donors.vue?vue&type=script&lang=js& ***!
+  \*******************************************************************************************************************************************************************************************/
+/*! exports provided: default */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony import */ var C_xampp_htdocs_PBCPortal_resources_js_components_Reusables_DonorModal_vue__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ./resources/js/components/Reusables/DonorModal.vue */ "./resources/js/components/Reusables/DonorModal.vue");
+/* harmony import */ var C_xampp_htdocs_PBCPortal_resources_js_components_reusables_Donors_DonorsTable_vue__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ./resources/js/components/reusables/Donors/DonorsTable.vue */ "./resources/js/components/reusables/Donors/DonorsTable.vue");
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+
+
+/* harmony default export */ __webpack_exports__["default"] = ({
+  data: function data() {
+    return {
+      donors: [],
+      donors_fetched: false,
+      modal_donor: {},
+      modal_donations: []
+    };
+  },
+  props: {
+    seeDonorProgress: Boolean
+  },
+  components: {
+    "donor-modal": C_xampp_htdocs_PBCPortal_resources_js_components_Reusables_DonorModal_vue__WEBPACK_IMPORTED_MODULE_0__["default"],
+    "donors-table": C_xampp_htdocs_PBCPortal_resources_js_components_reusables_Donors_DonorsTable_vue__WEBPACK_IMPORTED_MODULE_1__["default"]
+  },
+  methods: {
+    loadAllDonors: function loadAllDonors() {
+      var _this = this;
+
+      axios.get("/api/user").then(function (response) {
+        return _this.donors = response.data.data;
+      }).then(function () {
+        _this.donors_fetched = true;
+      });
+    },
+    showDonorModal: function showDonorModal(donor) {
+      var _this2 = this;
+
+      this.modal_donor = donor;
+      axios.get("/api/blood_unit", {
+        params: {
+          donor_id: this.modal_donor.donor_id
+        }
+      }).then(function (response) {
+        return _this2.modal_donations = response.data.data;
+      });
+      this.$bvModal.show("donor-modal");
+    }
+  },
+  mounted: function mounted() {
+    this.loadAllDonors();
     console.log("Component mounted.");
   }
 });
@@ -15410,6 +15952,84 @@ __webpack_require__.r(__webpack_exports__);
 
 /***/ }),
 
+/***/ "./node_modules/babel-loader/lib/index.js?!./node_modules/vue-loader/lib/index.js?!./resources/js/components/Reusables/Donors/DonorProgress.vue?vue&type=script&lang=js&":
+/*!*****************************************************************************************************************************************************************************************!*\
+  !*** ./node_modules/babel-loader/lib??ref--4-0!./node_modules/vue-loader/lib??vue-loader-options!./resources/js/components/Reusables/Donors/DonorProgress.vue?vue&type=script&lang=js& ***!
+  \*****************************************************************************************************************************************************************************************/
+/*! exports provided: default */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+/* harmony default export */ __webpack_exports__["default"] = ({
+  data: function data() {
+    return {};
+  },
+  props: {
+    donor: Object
+  },
+  methods: {
+    close: function close() {
+      this.$emit("close");
+    }
+  },
+  mounted: function mounted() {}
+});
+
+/***/ }),
+
 /***/ "./node_modules/babel-loader/lib/index.js?!./node_modules/vue-loader/lib/index.js?!./resources/js/components/reusables/Donors/DonorsTable.vue?vue&type=script&lang=js&":
 /*!***************************************************************************************************************************************************************************************!*\
   !*** ./node_modules/babel-loader/lib??ref--4-0!./node_modules/vue-loader/lib??vue-loader-options!./resources/js/components/reusables/Donors/DonorsTable.vue?vue&type=script&lang=js& ***!
@@ -15420,6 +16040,13 @@ __webpack_require__.r(__webpack_exports__);
 "use strict";
 __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var C_xampp_htdocs_PBCPortal_resources_js_components_Reusables_DonorModal_vue__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ./resources/js/components/Reusables/DonorModal.vue */ "./resources/js/components/Reusables/DonorModal.vue");
+/* harmony import */ var C_xampp_htdocs_PBCPortal_resources_js_components_Reusables_Donors_DonorProgress_vue__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ./resources/js/components/Reusables/Donors/DonorProgress.vue */ "./resources/js/components/Reusables/Donors/DonorProgress.vue");
+//
+//
+//
+//
+//
+//
 //
 //
 //
@@ -15449,19 +16076,23 @@ __webpack_require__.r(__webpack_exports__);
 //
 //
 
+
 /* harmony default export */ __webpack_exports__["default"] = ({
   data: function data() {
     return {
       modal_donor: null,
-      selected_donor: {}
+      selected_donor: {},
+      donor_progress: null
     };
   },
   props: {
     donors: Array,
-    shouldSelect: Boolean
+    shouldSelect: Boolean,
+    seeDonorProgress: Boolean
   },
   components: {
-    'donor-modal': C_xampp_htdocs_PBCPortal_resources_js_components_Reusables_DonorModal_vue__WEBPACK_IMPORTED_MODULE_0__["default"]
+    'donor-modal': C_xampp_htdocs_PBCPortal_resources_js_components_Reusables_DonorModal_vue__WEBPACK_IMPORTED_MODULE_0__["default"],
+    'donor-progress': C_xampp_htdocs_PBCPortal_resources_js_components_Reusables_Donors_DonorProgress_vue__WEBPACK_IMPORTED_MODULE_1__["default"]
   },
   watch: {
     selected_donor: function selected_donor(val) {
@@ -15473,7 +16104,13 @@ __webpack_require__.r(__webpack_exports__);
       this.modal_donor = donor;
       this.$bvModal.show('donor-modal');
     },
-    openModal: function openModal() {}
+    openDonorProgress: function openDonorProgress(donor) {
+      this.donor_progress = donor;
+      this.$bvModal.show('donor-progress');
+    },
+    mounted: function mounted() {
+      console.log(this.seeDonorProgress);
+    }
   }
 });
 
@@ -81480,11 +82117,11 @@ var render = function() {
                           return _c("tr", { key: user.id }, [
                             _c("td", [_vm._v(_vm._s(user.id))]),
                             _vm._v(" "),
-                            _c("td", [_vm._v(_vm._s(user.name))]),
+                            _c("td", [_vm._v(_vm._s(user.full_name))]),
                             _vm._v(" "),
                             _c("td", [_vm._v(_vm._s(user.email))]),
                             _vm._v(" "),
-                            _c("td", [_vm._v(_vm._s(user.type))]),
+                            _c("td", [_vm._v(_vm._s(user.job_title))]),
                             _vm._v(" "),
                             _vm._m(2, true)
                           ])
@@ -81884,20 +82521,12 @@ var render = function() {
                                       ]),
                                       _vm._v(" "),
                                       _c("td", [
-                                        _vm._v(
-                                          _vm._s(typed_blood_unit.donation_code)
-                                        )
+                                        _vm._v(_vm._s(typed_blood_unit.code))
                                       ]),
                                       _vm._v(" "),
                                       _c("td", [
                                         _vm._v(
                                           _vm._s(typed_blood_unit.blood_type)
-                                        )
-                                      ]),
-                                      _vm._v(" "),
-                                      _c("td", [
-                                        _vm._v(
-                                          _vm._s(typed_blood_unit.quantity)
                                         )
                                       ]),
                                       _vm._v(" "),
@@ -82230,6 +82859,465 @@ var staticRenderFns = [
           },
           [_vm._v("Process Blood Units")]
         )
+      ])
+    ])
+  }
+]
+render._withStripped = true
+
+
+
+/***/ }),
+
+/***/ "./node_modules/vue-loader/lib/loaders/templateLoader.js?!./node_modules/vue-loader/lib/index.js?!./resources/js/components/Admin/Blood Inventory/Blood Unit/BloodTesting.vue?vue&type=template&id=26526be7&":
+/*!************************************************************************************************************************************************************************************************************************************************!*\
+  !*** ./node_modules/vue-loader/lib/loaders/templateLoader.js??vue-loader-options!./node_modules/vue-loader/lib??vue-loader-options!./resources/js/components/Admin/Blood Inventory/Blood Unit/BloodTesting.vue?vue&type=template&id=26526be7& ***!
+  \************************************************************************************************************************************************************************************************************************************************/
+/*! exports provided: render, staticRenderFns */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "render", function() { return render; });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "staticRenderFns", function() { return staticRenderFns; });
+var render = function() {
+  var _vm = this
+  var _h = _vm.$createElement
+  var _c = _vm._self._c || _h
+  return _c(
+    "div",
+    [
+      _c("navbar"),
+      _vm._v(" "),
+      _vm.data_fetched
+        ? _c("div", { staticClass: "content-wrapper" }, [
+            _c("div", { staticClass: "content" }, [
+              _c("div", { staticClass: "container-fluid" }, [
+                _c("div", { staticClass: "row" }, [
+                  _c("div", { staticClass: "col-md-12" }, [
+                    _c("div", { staticClass: "card mt-3" }, [
+                      _vm._m(0),
+                      _vm._v(" "),
+                      _c("div", { staticClass: "card-body" }, [
+                        _c("div", {}),
+                        _vm._v(" "),
+                        _c(
+                          "table",
+                          { staticClass: "table table-md table-striped" },
+                          [
+                            _vm._m(1),
+                            _vm._v(" "),
+                            _c(
+                              "tbody",
+                              _vm._l(_vm.processed_blood_units, function(
+                                processed_blood_unit,
+                                index
+                              ) {
+                                return _c("tr", { key: index }, [
+                                  _c("td", [_vm._v(_vm._s(index))]),
+                                  _vm._v(" "),
+                                  _c("td", [
+                                    _vm._v(
+                                      _vm._s(
+                                        _vm.processed_blood_units[index].code
+                                      )
+                                    )
+                                  ]),
+                                  _vm._v(" "),
+                                  _c("td", [
+                                    _c(
+                                      "select",
+                                      {
+                                        directives: [
+                                          {
+                                            name: "model",
+                                            rawName: "v-model",
+                                            value:
+                                              _vm.testing_blood_units[index]
+                                                .hbSag,
+                                            expression:
+                                              "testing_blood_units[index].hbSag"
+                                          }
+                                        ],
+                                        staticClass: "custom-select",
+                                        on: {
+                                          change: function($event) {
+                                            var $$selectedVal = Array.prototype.filter
+                                              .call(
+                                                $event.target.options,
+                                                function(o) {
+                                                  return o.selected
+                                                }
+                                              )
+                                              .map(function(o) {
+                                                var val =
+                                                  "_value" in o
+                                                    ? o._value
+                                                    : o.value
+                                                return val
+                                              })
+                                            _vm.$set(
+                                              _vm.testing_blood_units[index],
+                                              "hbSag",
+                                              $event.target.multiple
+                                                ? $$selectedVal
+                                                : $$selectedVal[0]
+                                            )
+                                          }
+                                        }
+                                      },
+                                      [
+                                        _c(
+                                          "option",
+                                          {
+                                            attrs: { disabled: "", value: "" }
+                                          },
+                                          [_vm._v("Please select one")]
+                                        ),
+                                        _vm._v(" "),
+                                        _c(
+                                          "option",
+                                          { attrs: { value: "+" } },
+                                          [_vm._v("Positive")]
+                                        ),
+                                        _vm._v(" "),
+                                        _c(
+                                          "option",
+                                          { attrs: { value: "-" } },
+                                          [_vm._v("Negative")]
+                                        )
+                                      ]
+                                    )
+                                  ]),
+                                  _vm._v(" "),
+                                  _c("td", [
+                                    _c(
+                                      "select",
+                                      {
+                                        directives: [
+                                          {
+                                            name: "model",
+                                            rawName: "v-model",
+                                            value:
+                                              _vm.testing_blood_units[index]
+                                                .HCV,
+                                            expression:
+                                              "testing_blood_units[index].HCV"
+                                          }
+                                        ],
+                                        staticClass: "custom-select",
+                                        on: {
+                                          change: function($event) {
+                                            var $$selectedVal = Array.prototype.filter
+                                              .call(
+                                                $event.target.options,
+                                                function(o) {
+                                                  return o.selected
+                                                }
+                                              )
+                                              .map(function(o) {
+                                                var val =
+                                                  "_value" in o
+                                                    ? o._value
+                                                    : o.value
+                                                return val
+                                              })
+                                            _vm.$set(
+                                              _vm.testing_blood_units[index],
+                                              "HCV",
+                                              $event.target.multiple
+                                                ? $$selectedVal
+                                                : $$selectedVal[0]
+                                            )
+                                          }
+                                        }
+                                      },
+                                      [
+                                        _c(
+                                          "option",
+                                          {
+                                            attrs: { disabled: "", value: "" }
+                                          },
+                                          [_vm._v("Please select one")]
+                                        ),
+                                        _vm._v(" "),
+                                        _c(
+                                          "option",
+                                          { attrs: { value: "+" } },
+                                          [_vm._v("Positive")]
+                                        ),
+                                        _vm._v(" "),
+                                        _c(
+                                          "option",
+                                          { attrs: { value: "-" } },
+                                          [_vm._v("Negative")]
+                                        )
+                                      ]
+                                    )
+                                  ]),
+                                  _vm._v(" "),
+                                  _c("td", [
+                                    _c(
+                                      "select",
+                                      {
+                                        directives: [
+                                          {
+                                            name: "model",
+                                            rawName: "v-model",
+                                            value:
+                                              _vm.testing_blood_units[index]
+                                                .HIV,
+                                            expression:
+                                              "testing_blood_units[index].HIV"
+                                          }
+                                        ],
+                                        staticClass: "custom-select",
+                                        on: {
+                                          change: function($event) {
+                                            var $$selectedVal = Array.prototype.filter
+                                              .call(
+                                                $event.target.options,
+                                                function(o) {
+                                                  return o.selected
+                                                }
+                                              )
+                                              .map(function(o) {
+                                                var val =
+                                                  "_value" in o
+                                                    ? o._value
+                                                    : o.value
+                                                return val
+                                              })
+                                            _vm.$set(
+                                              _vm.testing_blood_units[index],
+                                              "HIV",
+                                              $event.target.multiple
+                                                ? $$selectedVal
+                                                : $$selectedVal[0]
+                                            )
+                                          }
+                                        }
+                                      },
+                                      [
+                                        _c(
+                                          "option",
+                                          {
+                                            attrs: { disabled: "", value: "" }
+                                          },
+                                          [_vm._v("Please select one")]
+                                        ),
+                                        _vm._v(" "),
+                                        _c(
+                                          "option",
+                                          { attrs: { value: "+" } },
+                                          [_vm._v("Positive")]
+                                        ),
+                                        _vm._v(" "),
+                                        _c(
+                                          "option",
+                                          { attrs: { value: "-" } },
+                                          [_vm._v("Negative")]
+                                        )
+                                      ]
+                                    )
+                                  ]),
+                                  _vm._v(" "),
+                                  _c("td", [
+                                    _c(
+                                      "select",
+                                      {
+                                        directives: [
+                                          {
+                                            name: "model",
+                                            rawName: "v-model",
+                                            value:
+                                              _vm.testing_blood_units[index]
+                                                .malaria,
+                                            expression:
+                                              "testing_blood_units[index].malaria"
+                                          }
+                                        ],
+                                        staticClass: "custom-select",
+                                        on: {
+                                          change: function($event) {
+                                            var $$selectedVal = Array.prototype.filter
+                                              .call(
+                                                $event.target.options,
+                                                function(o) {
+                                                  return o.selected
+                                                }
+                                              )
+                                              .map(function(o) {
+                                                var val =
+                                                  "_value" in o
+                                                    ? o._value
+                                                    : o.value
+                                                return val
+                                              })
+                                            _vm.$set(
+                                              _vm.testing_blood_units[index],
+                                              "malaria",
+                                              $event.target.multiple
+                                                ? $$selectedVal
+                                                : $$selectedVal[0]
+                                            )
+                                          }
+                                        }
+                                      },
+                                      [
+                                        _c(
+                                          "option",
+                                          {
+                                            attrs: { disabled: "", value: "" }
+                                          },
+                                          [_vm._v("Please select one")]
+                                        ),
+                                        _vm._v(" "),
+                                        _c(
+                                          "option",
+                                          { attrs: { value: "+" } },
+                                          [_vm._v("Positive")]
+                                        ),
+                                        _vm._v(" "),
+                                        _c(
+                                          "option",
+                                          { attrs: { value: "-" } },
+                                          [_vm._v("Negative")]
+                                        )
+                                      ]
+                                    )
+                                  ]),
+                                  _vm._v(" "),
+                                  _c("td", [
+                                    _c(
+                                      "select",
+                                      {
+                                        directives: [
+                                          {
+                                            name: "model",
+                                            rawName: "v-model",
+                                            value:
+                                              _vm.testing_blood_units[index]
+                                                .syphilis,
+                                            expression:
+                                              "testing_blood_units[index].syphilis"
+                                          }
+                                        ],
+                                        staticClass: "custom-select",
+                                        on: {
+                                          change: function($event) {
+                                            var $$selectedVal = Array.prototype.filter
+                                              .call(
+                                                $event.target.options,
+                                                function(o) {
+                                                  return o.selected
+                                                }
+                                              )
+                                              .map(function(o) {
+                                                var val =
+                                                  "_value" in o
+                                                    ? o._value
+                                                    : o.value
+                                                return val
+                                              })
+                                            _vm.$set(
+                                              _vm.testing_blood_units[index],
+                                              "syphilis",
+                                              $event.target.multiple
+                                                ? $$selectedVal
+                                                : $$selectedVal[0]
+                                            )
+                                          }
+                                        }
+                                      },
+                                      [
+                                        _c(
+                                          "option",
+                                          {
+                                            attrs: { disabled: "", value: "" }
+                                          },
+                                          [_vm._v("Please select one")]
+                                        ),
+                                        _vm._v(" "),
+                                        _c(
+                                          "option",
+                                          { attrs: { value: "+" } },
+                                          [_vm._v("Positive")]
+                                        ),
+                                        _vm._v(" "),
+                                        _c(
+                                          "option",
+                                          { attrs: { value: "-" } },
+                                          [_vm._v("Negative")]
+                                        )
+                                      ]
+                                    )
+                                  ])
+                                ])
+                              }),
+                              0
+                            )
+                          ]
+                        )
+                      ]),
+                      _vm._v(" "),
+                      _c("div", { staticClass: "card-footer" }, [
+                        _c("div", { staticClass: "card-tools" }, [
+                          _c(
+                            "button",
+                            {
+                              staticClass: "btn btn-success float-right",
+                              attrs: { type: "button" },
+                              on: { click: _vm.testBlood }
+                            },
+                            [_vm._v("Update")]
+                          ),
+                          _vm._v(
+                            "\n                  " +
+                              _vm._s(_vm.testing_blood_units) +
+                              "\n                "
+                          )
+                        ])
+                      ])
+                    ])
+                  ])
+                ])
+              ])
+            ])
+          ])
+        : _vm._e()
+    ],
+    1
+  )
+}
+var staticRenderFns = [
+  function() {
+    var _vm = this
+    var _h = _vm.$createElement
+    var _c = _vm._self._c || _h
+    return _c("div", { staticClass: "card-header" }, [
+      _c("h3", { staticClass: "card-title" }, [_vm._v("Blood Testing")])
+    ])
+  },
+  function() {
+    var _vm = this
+    var _h = _vm.$createElement
+    var _c = _vm._self._c || _h
+    return _c("thead", [
+      _c("tr", [
+        _c("th", [_vm._v("#")]),
+        _vm._v(" "),
+        _c("th", [_vm._v("Donation Code")]),
+        _vm._v(" "),
+        _c("th", [_vm._v("HbSag")]),
+        _vm._v(" "),
+        _c("th", [_vm._v("HCV")]),
+        _vm._v(" "),
+        _c("th", [_vm._v("HIV")]),
+        _vm._v(" "),
+        _c("th", [_vm._v("MALARIA")]),
+        _vm._v(" "),
+        _c("th", [_vm._v("SYPHILIS")])
       ])
     ])
   }
@@ -83158,6 +84246,7 @@ var render = function() {
                             _vm.show_donors
                               ? _c("donors", {
                                   attrs: {
+                                    seeDonorProgress: true,
                                     donors: _vm.donors,
                                     MBDName: _vm.show_mbd.name,
                                     all_dates: _vm.all_dates
@@ -83236,7 +84325,11 @@ var render = function() {
           { staticClass: "col-md-12" },
           [
             _c("donors-table", {
-              attrs: { shouldSelect: false, donors: _vm.donors }
+              attrs: {
+                seeDonorProgress: _vm.seeDonorProgress,
+                shouldSelect: false,
+                donors: _vm.donors
+              }
             }),
             _vm._v(" "),
             _c(
@@ -84504,6 +85597,403 @@ render._withStripped = true
 
 /***/ }),
 
+/***/ "./node_modules/vue-loader/lib/loaders/templateLoader.js?!./node_modules/vue-loader/lib/index.js?!./resources/js/components/Admin/Donors and Agencies/Agencies.vue?vue&type=template&id=6d22227e&":
+/*!*************************************************************************************************************************************************************************************************************************************!*\
+  !*** ./node_modules/vue-loader/lib/loaders/templateLoader.js??vue-loader-options!./node_modules/vue-loader/lib??vue-loader-options!./resources/js/components/Admin/Donors and Agencies/Agencies.vue?vue&type=template&id=6d22227e& ***!
+  \*************************************************************************************************************************************************************************************************************************************/
+/*! exports provided: render, staticRenderFns */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "render", function() { return render; });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "staticRenderFns", function() { return staticRenderFns; });
+var render = function() {
+  var _vm = this
+  var _h = _vm.$createElement
+  var _c = _vm._self._c || _h
+  return _c(
+    "div",
+    [
+      _c("navbar"),
+      _vm._v(" "),
+      _c("div", { staticClass: "content-wrapper" }, [
+        _c("div", { staticClass: "content" }, [
+          _c("div", { staticClass: "container-fluid" }, [
+            _c("div", { staticClass: "row mt-3 justify-content-center" }, [
+              _c("div", { staticClass: "col-md-12" }, [
+                _c("div", { staticClass: "card" }, [
+                  _vm._m(0),
+                  _vm._v(" "),
+                  _c("div", { staticClass: "card-body" }, [
+                    _vm._m(1),
+                    _vm._v(" "),
+                    _c("hr"),
+                    _vm._v(" "),
+                    _c(
+                      "table",
+                      { staticClass: "table table-lg table-striped" },
+                      [
+                        _vm._m(2),
+                        _vm._v(" "),
+                        _c(
+                          "tbody",
+                          _vm._l(_vm.agencies, function(agency) {
+                            return _c("tr", { key: agency.id }, [
+                              _c("td", [_vm._v(_vm._s(agency.id))]),
+                              _vm._v(" "),
+                              _c("td", [_vm._v(_vm._s(agency.name))]),
+                              _vm._v(" "),
+                              _c("td", [_vm._v("Active")]),
+                              _vm._v(" "),
+                              _c("td", [_vm._v(_vm._s(agency.address))]),
+                              _vm._v(" "),
+                              _c("td", [_vm._v("50 days ago")])
+                            ])
+                          }),
+                          0
+                        )
+                      ]
+                    )
+                  ])
+                ])
+              ])
+            ])
+          ])
+        ])
+      ]),
+      _vm._v(" "),
+      _c(
+        "div",
+        {
+          staticClass: "modal fade",
+          attrs: { id: "addAgency", tabindex: "-1", role: "dialog" }
+        },
+        [
+          _c(
+            "div",
+            {
+              staticClass: "modal-dialog modal-dialog-centered",
+              attrs: { role: "document" }
+            },
+            [
+              _c("div", { staticClass: "modal-content" }, [
+                _vm._m(3),
+                _vm._v(" "),
+                _c("div", { staticClass: "modal-body" }, [
+                  _c("div", { staticClass: "form-group" }, [
+                    _c("input", {
+                      directives: [
+                        {
+                          name: "model",
+                          rawName: "v-model",
+                          value: _vm.agency.name,
+                          expression: "agency.name"
+                        }
+                      ],
+                      staticClass: "form-control",
+                      attrs: {
+                        type: "text",
+                        name: "name",
+                        placeholder: "Name"
+                      },
+                      domProps: { value: _vm.agency.name },
+                      on: {
+                        input: function($event) {
+                          if ($event.target.composing) {
+                            return
+                          }
+                          _vm.$set(_vm.agency, "name", $event.target.value)
+                        }
+                      }
+                    })
+                  ]),
+                  _vm._v(" "),
+                  _c("div", { staticClass: "form-group" }, [
+                    _c("input", {
+                      directives: [
+                        {
+                          name: "model",
+                          rawName: "v-model",
+                          value: _vm.agency.email,
+                          expression: "agency.email"
+                        }
+                      ],
+                      staticClass: "form-control",
+                      attrs: {
+                        type: "email",
+                        name: "email",
+                        placeholder: "Enter Email Address"
+                      },
+                      domProps: { value: _vm.agency.email },
+                      on: {
+                        input: function($event) {
+                          if ($event.target.composing) {
+                            return
+                          }
+                          _vm.$set(_vm.agency, "email", $event.target.value)
+                        }
+                      }
+                    })
+                  ]),
+                  _vm._v(" "),
+                  _c("div", { staticClass: "form-group" }, [
+                    _c("input", {
+                      directives: [
+                        {
+                          name: "model",
+                          rawName: "v-model",
+                          value: _vm.agency.address,
+                          expression: "agency.address"
+                        }
+                      ],
+                      staticClass: "form-control",
+                      attrs: {
+                        type: "text",
+                        name: "address",
+                        placeholder: "Address"
+                      },
+                      domProps: { value: _vm.agency.address },
+                      on: {
+                        input: function($event) {
+                          if ($event.target.composing) {
+                            return
+                          }
+                          _vm.$set(_vm.agency, "address", $event.target.value)
+                        }
+                      }
+                    })
+                  ])
+                ]),
+                _vm._v(" "),
+                _c("div", { staticClass: "modal-footer" }, [
+                  _c(
+                    "button",
+                    {
+                      staticClass: "btn btn-secondary",
+                      attrs: { type: "button", "data-dismiss": "modal" }
+                    },
+                    [_vm._v("Close")]
+                  ),
+                  _vm._v(" "),
+                  _c(
+                    "button",
+                    {
+                      staticClass: "btn btn-primary",
+                      attrs: { type: "button" },
+                      on: { click: _vm.createAgency }
+                    },
+                    [_vm._v("Create")]
+                  )
+                ])
+              ])
+            ]
+          )
+        ]
+      )
+    ],
+    1
+  )
+}
+var staticRenderFns = [
+  function() {
+    var _vm = this
+    var _h = _vm.$createElement
+    var _c = _vm._self._c || _h
+    return _c("div", { staticClass: "card-header" }, [
+      _c("div", { staticClass: "card-title" }, [_vm._v("Agencies")]),
+      _vm._v(" "),
+      _c("div", { staticClass: "card-tools" }, [
+        _c(
+          "button",
+          {
+            staticClass: "btn btn-success",
+            attrs: { "data-toggle": "modal", "data-target": "#addAgency" }
+          },
+          [_vm._v("Add Agency")]
+        )
+      ])
+    ])
+  },
+  function() {
+    var _vm = this
+    var _h = _vm.$createElement
+    var _c = _vm._self._c || _h
+    return _c("form", { staticClass: "form-inline ml-3" }, [
+      _c("div", { staticClass: "input-group input-group-sm" }, [
+        _c("input", {
+          staticClass: "form-control form-control-navbar",
+          attrs: {
+            type: "search",
+            placeholder: "Search",
+            "aria-label": "Search"
+          }
+        }),
+        _vm._v(" "),
+        _c("div", { staticClass: "input-group-append" }, [
+          _c(
+            "button",
+            { staticClass: "btn btn-navbar", attrs: { type: "submit" } },
+            [_c("i", { staticClass: "fa fa-search" })]
+          )
+        ])
+      ])
+    ])
+  },
+  function() {
+    var _vm = this
+    var _h = _vm.$createElement
+    var _c = _vm._self._c || _h
+    return _c("thead", [
+      _c("tr", [
+        _c("th", [_vm._v("Agency ID")]),
+        _vm._v(" "),
+        _c("th", [_vm._v("Name")]),
+        _vm._v(" "),
+        _c("th", [_vm._v("Status")]),
+        _vm._v(" "),
+        _c("th", [_vm._v("Address")]),
+        _vm._v(" "),
+        _c("th", [_vm._v("Last MBD")])
+      ])
+    ])
+  },
+  function() {
+    var _vm = this
+    var _h = _vm.$createElement
+    var _c = _vm._self._c || _h
+    return _c("div", { staticClass: "modal-header" }, [
+      _c("h5", { staticClass: "modal-title" }, [_vm._v("Add New Agency")]),
+      _vm._v(" "),
+      _c(
+        "button",
+        {
+          staticClass: "close",
+          attrs: {
+            type: "button",
+            "data-dismiss": "modal",
+            "aria-label": "Close"
+          }
+        },
+        [_c("span", { attrs: { "aria-hidden": "true" } }, [_vm._v("×")])]
+      )
+    ])
+  }
+]
+render._withStripped = true
+
+
+
+/***/ }),
+
+/***/ "./node_modules/vue-loader/lib/loaders/templateLoader.js?!./node_modules/vue-loader/lib/index.js?!./resources/js/components/Admin/Donors and Agencies/Donors.vue?vue&type=template&id=64a0fcb0&":
+/*!***********************************************************************************************************************************************************************************************************************************!*\
+  !*** ./node_modules/vue-loader/lib/loaders/templateLoader.js??vue-loader-options!./node_modules/vue-loader/lib??vue-loader-options!./resources/js/components/Admin/Donors and Agencies/Donors.vue?vue&type=template&id=64a0fcb0& ***!
+  \***********************************************************************************************************************************************************************************************************************************/
+/*! exports provided: render, staticRenderFns */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "render", function() { return render; });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "staticRenderFns", function() { return staticRenderFns; });
+var render = function() {
+  var _vm = this
+  var _h = _vm.$createElement
+  var _c = _vm._self._c || _h
+  return _c(
+    "div",
+    [
+      _c("navbar"),
+      _vm._v(" "),
+      _c("div", { staticClass: "content-wrapper" }, [
+        _c("div", { staticClass: "content" }, [
+          _c("div", { staticClass: "container-fluid" }, [
+            _c("div", { staticClass: "row justify-content-center" }, [
+              _c("div", { staticClass: "col-md-12" }, [
+                _c("div", { staticClass: "card" }, [
+                  _vm._m(0),
+                  _vm._v(" "),
+                  _c("div", { staticClass: "card-body" }, [
+                    _vm._m(1),
+                    _vm._v(" "),
+                    _c("hr"),
+                    _vm._v(" "),
+                    _vm.donors_fetched
+                      ? _c(
+                          "div",
+                          [
+                            _c("donors-table", {
+                              attrs: {
+                                seeDonorProgress: _vm.seeDonorProgress,
+                                shouldSelect: false,
+                                donors: _vm.donors
+                              }
+                            })
+                          ],
+                          1
+                        )
+                      : _vm._e()
+                  ])
+                ])
+              ])
+            ])
+          ])
+        ])
+      ]),
+      _vm._v(" "),
+      _vm.modal_donor != null
+        ? _c("donor-modal", {
+            attrs: { donor: _vm.modal_donor, donations: _vm.modal_donations }
+          })
+        : _vm._e()
+    ],
+    1
+  )
+}
+var staticRenderFns = [
+  function() {
+    var _vm = this
+    var _h = _vm.$createElement
+    var _c = _vm._self._c || _h
+    return _c("div", { staticClass: "card-header" }, [
+      _c("div", { staticClass: "card-title" }, [_vm._v("Donors")]),
+      _vm._v(" "),
+      _c("div", { staticClass: "card-tools" })
+    ])
+  },
+  function() {
+    var _vm = this
+    var _h = _vm.$createElement
+    var _c = _vm._self._c || _h
+    return _c("form", { staticClass: "form-inline ml-3" }, [
+      _c("div", { staticClass: "input-group input-group-sm" }, [
+        _c("input", {
+          staticClass: "form-control form-control-navbar",
+          attrs: {
+            type: "search",
+            placeholder: "Search",
+            "aria-label": "Search"
+          }
+        }),
+        _vm._v(" "),
+        _c("div", { staticClass: "input-group-append" }, [
+          _c(
+            "button",
+            { staticClass: "btn btn-navbar", attrs: { type: "submit" } },
+            [_c("i", { staticClass: "fa fa-search" })]
+          )
+        ])
+      ])
+    ])
+  }
+]
+render._withStripped = true
+
+
+
+/***/ }),
+
 /***/ "./node_modules/vue-loader/lib/loaders/templateLoader.js?!./node_modules/vue-loader/lib/index.js?!./resources/js/components/Admin/DonorsAndAgencies.vue?vue&type=template&id=8e01e15c&":
 /*!**************************************************************************************************************************************************************************************************************************!*\
   !*** ./node_modules/vue-loader/lib/loaders/templateLoader.js??vue-loader-options!./node_modules/vue-loader/lib??vue-loader-options!./resources/js/components/Admin/DonorsAndAgencies.vue?vue&type=template&id=8e01e15c& ***!
@@ -85127,9 +86617,7 @@ var render = function() {
       _c("template", { slot: "modal-title" }, [_vm._v("Add Donation")]),
       _vm._v(" "),
       _c("div", { staticClass: "modal-body" }, [
-        _c("div", { staticClass: "row-title" }, [
-          _vm._v("Blood Donor History Questionnaire")
-        ]),
+        _c("div", { staticClass: "row-title" }, [_vm._v("Register Donor")]),
         _vm._v(" "),
         _c("div", { staticClass: "row-sub-category" }, [
           _vm._v("Blood Program: " + _vm._s(_vm.MBDName))
@@ -85691,19 +87179,19 @@ var staticRenderFns = [
     return _c("tr", [
       _c("td", [_vm._v("Total")]),
       _vm._v(" "),
-      _c("td", [_vm._v("1")]),
+      _c("td"),
       _vm._v(" "),
-      _c("td", [_vm._v("1")]),
+      _c("td"),
       _vm._v(" "),
-      _c("td", [_vm._v("1")]),
+      _c("td"),
       _vm._v(" "),
-      _c("td", [_vm._v("1")]),
+      _c("td"),
       _vm._v(" "),
-      _c("td", [_vm._v("1")]),
+      _c("td"),
       _vm._v(" "),
-      _c("td", [_vm._v("1")]),
+      _c("td"),
       _vm._v(" "),
-      _c("td", [_vm._v("6")])
+      _c("td")
     ])
   }
 ]
@@ -85824,7 +87312,7 @@ var render = function() {
                 ]),
                 _vm._v(" "),
                 _c("tr", [
-                  _c("th", [_vm._v("Civil Status:")]),
+                  _c("th", [_vm._v("Nationality:")]),
                   _vm._v(" "),
                   _c("td", [
                     _vm._v(_vm._s(_vm.donor.personal_details.nationality))
@@ -85841,15 +87329,15 @@ var render = function() {
           ? _c("div", [
               _c("div", { staticClass: "row donor-short-profile" }, [
                 _c("div", { staticClass: "col-md-4" }, [
-                  _vm._v("Total Donations: 0")
+                  _vm._v("Total Donations: ")
                 ]),
                 _vm._v(" "),
                 _c("div", { staticClass: "col-md-4" }, [
-                  _vm._v("Successful Donations: 30")
+                  _vm._v("Successful Donations: ")
                 ]),
                 _vm._v(" "),
                 _c("div", { staticClass: "col-md-4" }, [
-                  _vm._v("Unsuccessful Donations: 0")
+                  _vm._v("Unsuccessful Donations: ")
                 ])
               ]),
               _vm._v(" "),
@@ -85905,6 +87393,99 @@ render._withStripped = true
 
 /***/ }),
 
+/***/ "./node_modules/vue-loader/lib/loaders/templateLoader.js?!./node_modules/vue-loader/lib/index.js?!./resources/js/components/Reusables/Donors/DonorProgress.vue?vue&type=template&id=211a8ae3&":
+/*!*********************************************************************************************************************************************************************************************************************************!*\
+  !*** ./node_modules/vue-loader/lib/loaders/templateLoader.js??vue-loader-options!./node_modules/vue-loader/lib??vue-loader-options!./resources/js/components/Reusables/Donors/DonorProgress.vue?vue&type=template&id=211a8ae3& ***!
+  \*********************************************************************************************************************************************************************************************************************************/
+/*! exports provided: render, staticRenderFns */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "render", function() { return render; });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "staticRenderFns", function() { return staticRenderFns; });
+var render = function() {
+  var _vm = this
+  var _h = _vm.$createElement
+  var _c = _vm._self._c || _h
+  return _c(
+    "b-modal",
+    { attrs: { id: "donor-progress" } },
+    [
+      _c("template", { slot: "modal-title" }, [
+        _vm._v(_vm._s(_vm.donor.first_name) + " " + _vm._s(_vm.donor.last_name))
+      ]),
+      _vm._v(" "),
+      _c("div", { staticClass: "modal-body" }, [
+        _c("div", { staticClass: "row-title" }, [_vm._v("Basic Information")]),
+        _vm._v(" "),
+        _c("div", { staticClass: "row" }, [
+          _c("div", { staticClass: "col-md-3" }),
+          _vm._v(" "),
+          _c("div", { staticClass: "col-md-9" }, [
+            _c("table", { staticClass: "table table-sm" }, [
+              _c("thead"),
+              _vm._v(" "),
+              _c("tbody", [
+                _c("tr", [
+                  _c("th", [_vm._v("Full Name:")]),
+                  _vm._v(" "),
+                  _c("td", [_vm._v(_vm._s(_vm.donor.full_name))])
+                ]),
+                _vm._v(" "),
+                _c("tr", [
+                  _c("th", [_vm._v("Email:")]),
+                  _vm._v(" "),
+                  _c("td", [_vm._v(_vm._s(_vm.donor.email))])
+                ]),
+                _vm._v(" "),
+                _c("tr", [
+                  _c("th", [_vm._v("Account Created:")]),
+                  _vm._v(" "),
+                  _c("td", [_vm._v(_vm._s(_vm.donor.created_at))])
+                ]),
+                _vm._v(" "),
+                _c("tr", [
+                  _c("th", [_vm._v("Account Created:")]),
+                  _vm._v(" "),
+                  _c("td", [_vm._v(_vm._s(_vm.donor.created_at))])
+                ])
+              ])
+            ])
+          ])
+        ]),
+        _vm._v(" "),
+        _c("div", { staticClass: "row-title" }, [_vm._v("Donation Progress ")]),
+        _vm._v(" "),
+        _c("div", { staticClass: "row" }, [
+          _c("div", { staticClass: "col-md-4" }, [
+            _vm._v("\n            Progress Bar\n        ")
+          ]),
+          _vm._v(" "),
+          _c("div", { staticClass: "col-md-6" }, [
+            _c("ul", { staticClass: "list-group" }, [
+              _c("li", { staticClass: "list-group-item disabled" }, [
+                _vm._v("Donor History")
+              ]),
+              _vm._v(" "),
+              _c("li", { staticClass: "list-group-item" }, [
+                _vm._v("Blood Unit")
+              ])
+            ])
+          ])
+        ])
+      ])
+    ],
+    2
+  )
+}
+var staticRenderFns = []
+render._withStripped = true
+
+
+
+/***/ }),
+
 /***/ "./node_modules/vue-loader/lib/loaders/templateLoader.js?!./node_modules/vue-loader/lib/index.js?!./resources/js/components/reusables/Donors/DonorsTable.vue?vue&type=template&id=31f627de&":
 /*!*******************************************************************************************************************************************************************************************************************************!*\
   !*** ./node_modules/vue-loader/lib/loaders/templateLoader.js??vue-loader-options!./node_modules/vue-loader/lib??vue-loader-options!./resources/js/components/reusables/Donors/DonorsTable.vue?vue&type=template&id=31f627de& ***!
@@ -85925,7 +87506,21 @@ var render = function() {
     { staticClass: "container" },
     [
       _c("table", { staticClass: "table table-striped" }, [
-        _vm._m(0),
+        _c("thead", [
+          _c("tr", [
+            _c("th", [_vm._v("Donor ID")]),
+            _vm._v(" "),
+            _c("th", [_vm._v("Last Name")]),
+            _vm._v(" "),
+            _c("th", [_vm._v("First Name")]),
+            _vm._v(" "),
+            _c("th", [_vm._v("Email")]),
+            _vm._v(" "),
+            _vm.seeDonorProgress ? _c("th", [_vm._v("Status")]) : _vm._e(),
+            _vm._v(" "),
+            _vm.shouldSelect ? _c("th") : _vm._e()
+          ])
+        ]),
         _vm._v(" "),
         _c(
           "tbody",
@@ -85938,6 +87533,7 @@ var render = function() {
                     attrs: { href: "#" },
                     on: {
                       click: function($event) {
+                        $event.preventDefault()
                         return _vm.showDonorModal(donor)
                       }
                     }
@@ -85951,6 +87547,24 @@ var render = function() {
               _c("td", [_vm._v(_vm._s(donor.first_name))]),
               _vm._v(" "),
               _c("td", [_vm._v(_vm._s(donor.email))]),
+              _vm._v(" "),
+              _vm.seeDonorProgress
+                ? _c("td", [
+                    _c(
+                      "a",
+                      {
+                        attrs: { href: "#" },
+                        on: {
+                          click: function($event) {
+                            $event.preventDefault()
+                            return _vm.openDonorProgress(donor)
+                          }
+                        }
+                      },
+                      [_vm._v(" Status ")]
+                    )
+                  ])
+                : _vm._e(),
               _vm._v(" "),
               _vm.shouldSelect
                 ? _c(
@@ -85978,29 +87592,16 @@ var render = function() {
       _vm._v(" "),
       _vm.modal_donor != null
         ? _c("donor-modal", { attrs: { donor: _vm.modal_donor } })
+        : _vm._e(),
+      _vm._v(" "),
+      _vm.donor_progress != null
+        ? _c("donor-progress", { attrs: { donor: _vm.donor_progress } })
         : _vm._e()
     ],
     1
   )
 }
-var staticRenderFns = [
-  function() {
-    var _vm = this
-    var _h = _vm.$createElement
-    var _c = _vm._self._c || _h
-    return _c("thead", [
-      _c("tr", [
-        _c("th", [_vm._v("Donor ID")]),
-        _vm._v(" "),
-        _c("th", [_vm._v("Last Name")]),
-        _vm._v(" "),
-        _c("th", [_vm._v("First Name")]),
-        _vm._v(" "),
-        _c("th", [_vm._v("Email")])
-      ])
-    ])
-  }
-]
+var staticRenderFns = []
 render._withStripped = true
 
 
@@ -86128,7 +87729,7 @@ var render = function() {
                     [
                       _c("donors-table", {
                         attrs: {
-                          shouldSelect: true,
+                          shouldSelect: false,
                           donors: _vm.searchResults
                         },
                         on: { donor_change: _vm.onDonorChange }
@@ -107748,14 +109349,20 @@ var routes = [{
 }, {
   path: '/bloodInventory/bloodProcessing',
   component: __webpack_require__(/*! ./components/Admin/Blood Inventory/Blood Unit/BloodProcessing.vue */ "./resources/js/components/Admin/Blood Inventory/Blood Unit/BloodProcessing.vue")["default"]
-}, // { path: '/bloodInventory/bloodTesting', component: require('./components/pages/Blood Inventory/Blood Unit/BloodTesting.vue').default },
-// { path: '/bloodInventory/bloodReactions', component: require('./components/pages/Blood Inventory/Blood Unit/BloodReactions.vue').default },
+}, {
+  path: '/bloodInventory/bloodTesting',
+  component: __webpack_require__(/*! ./components/Admin/Blood Inventory/Blood Unit/BloodTesting.vue */ "./resources/js/components/Admin/Blood Inventory/Blood Unit/BloodTesting.vue")["default"]
+}, // { path: '/bloodInventory/bloodReactions', component: require('./components/pages/Blood Inventory/Blood Unit/BloodReactions.vue').default },
 // { path: '/bloodInventory/bloodDiscard', component: require('./components/pages/Blood Inventory/Blood Unit/BloodDiscard.vue').default },
 // /**2.) Blood Stocks  */
 // /** PATHS TO DONORS AND AGENCIES */
-// { path: '/donorsAgencies/donors', component: require('./components/pages/Donors and Agencies/Donors.vue').default },
-// { path: '/donorsAgencies/agencies', component: require('./components/pages/Donors and Agencies/Agencies.vue').default },
-// /** PATHS TO BLOOD PROGRAMS */
+{
+  path: '/donorsAgencies/donors',
+  component: __webpack_require__(/*! ./components/Admin/Donors and Agencies/Donors.vue */ "./resources/js/components/Admin/Donors and Agencies/Donors.vue")["default"]
+}, {
+  path: '/donorsAgencies/agencies',
+  component: __webpack_require__(/*! ./components/Admin/Donors and Agencies/Agencies.vue */ "./resources/js/components/Admin/Donors and Agencies/Agencies.vue")["default"]
+}, // /** PATHS TO BLOOD PROGRAMS */
 {
   path: '/bloodPrograms/MBDs',
   component: __webpack_require__(/*! ./components/Admin/Blood Programs/MBDs.vue */ "./resources/js/components/Admin/Blood Programs/MBDs.vue")["default"]
@@ -107996,6 +109603,75 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony reexport (safe) */ __webpack_require__.d(__webpack_exports__, "render", function() { return _node_modules_vue_loader_lib_loaders_templateLoader_js_vue_loader_options_node_modules_vue_loader_lib_index_js_vue_loader_options_BloodProcessing_vue_vue_type_template_id_39ff548c___WEBPACK_IMPORTED_MODULE_0__["render"]; });
 
 /* harmony reexport (safe) */ __webpack_require__.d(__webpack_exports__, "staticRenderFns", function() { return _node_modules_vue_loader_lib_loaders_templateLoader_js_vue_loader_options_node_modules_vue_loader_lib_index_js_vue_loader_options_BloodProcessing_vue_vue_type_template_id_39ff548c___WEBPACK_IMPORTED_MODULE_0__["staticRenderFns"]; });
+
+
+
+/***/ }),
+
+/***/ "./resources/js/components/Admin/Blood Inventory/Blood Unit/BloodTesting.vue":
+/*!***********************************************************************************!*\
+  !*** ./resources/js/components/Admin/Blood Inventory/Blood Unit/BloodTesting.vue ***!
+  \***********************************************************************************/
+/*! exports provided: default */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony import */ var _BloodTesting_vue_vue_type_template_id_26526be7___WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ./BloodTesting.vue?vue&type=template&id=26526be7& */ "./resources/js/components/Admin/Blood Inventory/Blood Unit/BloodTesting.vue?vue&type=template&id=26526be7&");
+/* harmony import */ var _BloodTesting_vue_vue_type_script_lang_js___WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ./BloodTesting.vue?vue&type=script&lang=js& */ "./resources/js/components/Admin/Blood Inventory/Blood Unit/BloodTesting.vue?vue&type=script&lang=js&");
+/* empty/unused harmony star reexport *//* harmony import */ var _node_modules_vue_loader_lib_runtime_componentNormalizer_js__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ../../../../../../node_modules/vue-loader/lib/runtime/componentNormalizer.js */ "./node_modules/vue-loader/lib/runtime/componentNormalizer.js");
+
+
+
+
+
+/* normalize component */
+
+var component = Object(_node_modules_vue_loader_lib_runtime_componentNormalizer_js__WEBPACK_IMPORTED_MODULE_2__["default"])(
+  _BloodTesting_vue_vue_type_script_lang_js___WEBPACK_IMPORTED_MODULE_1__["default"],
+  _BloodTesting_vue_vue_type_template_id_26526be7___WEBPACK_IMPORTED_MODULE_0__["render"],
+  _BloodTesting_vue_vue_type_template_id_26526be7___WEBPACK_IMPORTED_MODULE_0__["staticRenderFns"],
+  false,
+  null,
+  null,
+  null
+  
+)
+
+/* hot reload */
+if (false) { var api; }
+component.options.__file = "resources/js/components/Admin/Blood Inventory/Blood Unit/BloodTesting.vue"
+/* harmony default export */ __webpack_exports__["default"] = (component.exports);
+
+/***/ }),
+
+/***/ "./resources/js/components/Admin/Blood Inventory/Blood Unit/BloodTesting.vue?vue&type=script&lang=js&":
+/*!************************************************************************************************************!*\
+  !*** ./resources/js/components/Admin/Blood Inventory/Blood Unit/BloodTesting.vue?vue&type=script&lang=js& ***!
+  \************************************************************************************************************/
+/*! exports provided: default */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony import */ var _node_modules_babel_loader_lib_index_js_ref_4_0_node_modules_vue_loader_lib_index_js_vue_loader_options_BloodTesting_vue_vue_type_script_lang_js___WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! -!../../../../../../node_modules/babel-loader/lib??ref--4-0!../../../../../../node_modules/vue-loader/lib??vue-loader-options!./BloodTesting.vue?vue&type=script&lang=js& */ "./node_modules/babel-loader/lib/index.js?!./node_modules/vue-loader/lib/index.js?!./resources/js/components/Admin/Blood Inventory/Blood Unit/BloodTesting.vue?vue&type=script&lang=js&");
+/* empty/unused harmony star reexport */ /* harmony default export */ __webpack_exports__["default"] = (_node_modules_babel_loader_lib_index_js_ref_4_0_node_modules_vue_loader_lib_index_js_vue_loader_options_BloodTesting_vue_vue_type_script_lang_js___WEBPACK_IMPORTED_MODULE_0__["default"]); 
+
+/***/ }),
+
+/***/ "./resources/js/components/Admin/Blood Inventory/Blood Unit/BloodTesting.vue?vue&type=template&id=26526be7&":
+/*!******************************************************************************************************************!*\
+  !*** ./resources/js/components/Admin/Blood Inventory/Blood Unit/BloodTesting.vue?vue&type=template&id=26526be7& ***!
+  \******************************************************************************************************************/
+/*! exports provided: render, staticRenderFns */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony import */ var _node_modules_vue_loader_lib_loaders_templateLoader_js_vue_loader_options_node_modules_vue_loader_lib_index_js_vue_loader_options_BloodTesting_vue_vue_type_template_id_26526be7___WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! -!../../../../../../node_modules/vue-loader/lib/loaders/templateLoader.js??vue-loader-options!../../../../../../node_modules/vue-loader/lib??vue-loader-options!./BloodTesting.vue?vue&type=template&id=26526be7& */ "./node_modules/vue-loader/lib/loaders/templateLoader.js?!./node_modules/vue-loader/lib/index.js?!./resources/js/components/Admin/Blood Inventory/Blood Unit/BloodTesting.vue?vue&type=template&id=26526be7&");
+/* harmony reexport (safe) */ __webpack_require__.d(__webpack_exports__, "render", function() { return _node_modules_vue_loader_lib_loaders_templateLoader_js_vue_loader_options_node_modules_vue_loader_lib_index_js_vue_loader_options_BloodTesting_vue_vue_type_template_id_26526be7___WEBPACK_IMPORTED_MODULE_0__["render"]; });
+
+/* harmony reexport (safe) */ __webpack_require__.d(__webpack_exports__, "staticRenderFns", function() { return _node_modules_vue_loader_lib_loaders_templateLoader_js_vue_loader_options_node_modules_vue_loader_lib_index_js_vue_loader_options_BloodTesting_vue_vue_type_template_id_26526be7___WEBPACK_IMPORTED_MODULE_0__["staticRenderFns"]; });
 
 
 
@@ -108898,6 +110574,144 @@ __webpack_require__.r(__webpack_exports__);
 
 /***/ }),
 
+/***/ "./resources/js/components/Admin/Donors and Agencies/Agencies.vue":
+/*!************************************************************************!*\
+  !*** ./resources/js/components/Admin/Donors and Agencies/Agencies.vue ***!
+  \************************************************************************/
+/*! exports provided: default */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony import */ var _Agencies_vue_vue_type_template_id_6d22227e___WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ./Agencies.vue?vue&type=template&id=6d22227e& */ "./resources/js/components/Admin/Donors and Agencies/Agencies.vue?vue&type=template&id=6d22227e&");
+/* harmony import */ var _Agencies_vue_vue_type_script_lang_js___WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ./Agencies.vue?vue&type=script&lang=js& */ "./resources/js/components/Admin/Donors and Agencies/Agencies.vue?vue&type=script&lang=js&");
+/* empty/unused harmony star reexport *//* harmony import */ var _node_modules_vue_loader_lib_runtime_componentNormalizer_js__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ../../../../../node_modules/vue-loader/lib/runtime/componentNormalizer.js */ "./node_modules/vue-loader/lib/runtime/componentNormalizer.js");
+
+
+
+
+
+/* normalize component */
+
+var component = Object(_node_modules_vue_loader_lib_runtime_componentNormalizer_js__WEBPACK_IMPORTED_MODULE_2__["default"])(
+  _Agencies_vue_vue_type_script_lang_js___WEBPACK_IMPORTED_MODULE_1__["default"],
+  _Agencies_vue_vue_type_template_id_6d22227e___WEBPACK_IMPORTED_MODULE_0__["render"],
+  _Agencies_vue_vue_type_template_id_6d22227e___WEBPACK_IMPORTED_MODULE_0__["staticRenderFns"],
+  false,
+  null,
+  null,
+  null
+  
+)
+
+/* hot reload */
+if (false) { var api; }
+component.options.__file = "resources/js/components/Admin/Donors and Agencies/Agencies.vue"
+/* harmony default export */ __webpack_exports__["default"] = (component.exports);
+
+/***/ }),
+
+/***/ "./resources/js/components/Admin/Donors and Agencies/Agencies.vue?vue&type=script&lang=js&":
+/*!*************************************************************************************************!*\
+  !*** ./resources/js/components/Admin/Donors and Agencies/Agencies.vue?vue&type=script&lang=js& ***!
+  \*************************************************************************************************/
+/*! exports provided: default */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony import */ var _node_modules_babel_loader_lib_index_js_ref_4_0_node_modules_vue_loader_lib_index_js_vue_loader_options_Agencies_vue_vue_type_script_lang_js___WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! -!../../../../../node_modules/babel-loader/lib??ref--4-0!../../../../../node_modules/vue-loader/lib??vue-loader-options!./Agencies.vue?vue&type=script&lang=js& */ "./node_modules/babel-loader/lib/index.js?!./node_modules/vue-loader/lib/index.js?!./resources/js/components/Admin/Donors and Agencies/Agencies.vue?vue&type=script&lang=js&");
+/* empty/unused harmony star reexport */ /* harmony default export */ __webpack_exports__["default"] = (_node_modules_babel_loader_lib_index_js_ref_4_0_node_modules_vue_loader_lib_index_js_vue_loader_options_Agencies_vue_vue_type_script_lang_js___WEBPACK_IMPORTED_MODULE_0__["default"]); 
+
+/***/ }),
+
+/***/ "./resources/js/components/Admin/Donors and Agencies/Agencies.vue?vue&type=template&id=6d22227e&":
+/*!*******************************************************************************************************!*\
+  !*** ./resources/js/components/Admin/Donors and Agencies/Agencies.vue?vue&type=template&id=6d22227e& ***!
+  \*******************************************************************************************************/
+/*! exports provided: render, staticRenderFns */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony import */ var _node_modules_vue_loader_lib_loaders_templateLoader_js_vue_loader_options_node_modules_vue_loader_lib_index_js_vue_loader_options_Agencies_vue_vue_type_template_id_6d22227e___WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! -!../../../../../node_modules/vue-loader/lib/loaders/templateLoader.js??vue-loader-options!../../../../../node_modules/vue-loader/lib??vue-loader-options!./Agencies.vue?vue&type=template&id=6d22227e& */ "./node_modules/vue-loader/lib/loaders/templateLoader.js?!./node_modules/vue-loader/lib/index.js?!./resources/js/components/Admin/Donors and Agencies/Agencies.vue?vue&type=template&id=6d22227e&");
+/* harmony reexport (safe) */ __webpack_require__.d(__webpack_exports__, "render", function() { return _node_modules_vue_loader_lib_loaders_templateLoader_js_vue_loader_options_node_modules_vue_loader_lib_index_js_vue_loader_options_Agencies_vue_vue_type_template_id_6d22227e___WEBPACK_IMPORTED_MODULE_0__["render"]; });
+
+/* harmony reexport (safe) */ __webpack_require__.d(__webpack_exports__, "staticRenderFns", function() { return _node_modules_vue_loader_lib_loaders_templateLoader_js_vue_loader_options_node_modules_vue_loader_lib_index_js_vue_loader_options_Agencies_vue_vue_type_template_id_6d22227e___WEBPACK_IMPORTED_MODULE_0__["staticRenderFns"]; });
+
+
+
+/***/ }),
+
+/***/ "./resources/js/components/Admin/Donors and Agencies/Donors.vue":
+/*!**********************************************************************!*\
+  !*** ./resources/js/components/Admin/Donors and Agencies/Donors.vue ***!
+  \**********************************************************************/
+/*! exports provided: default */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony import */ var _Donors_vue_vue_type_template_id_64a0fcb0___WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ./Donors.vue?vue&type=template&id=64a0fcb0& */ "./resources/js/components/Admin/Donors and Agencies/Donors.vue?vue&type=template&id=64a0fcb0&");
+/* harmony import */ var _Donors_vue_vue_type_script_lang_js___WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ./Donors.vue?vue&type=script&lang=js& */ "./resources/js/components/Admin/Donors and Agencies/Donors.vue?vue&type=script&lang=js&");
+/* empty/unused harmony star reexport *//* harmony import */ var _node_modules_vue_loader_lib_runtime_componentNormalizer_js__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ../../../../../node_modules/vue-loader/lib/runtime/componentNormalizer.js */ "./node_modules/vue-loader/lib/runtime/componentNormalizer.js");
+
+
+
+
+
+/* normalize component */
+
+var component = Object(_node_modules_vue_loader_lib_runtime_componentNormalizer_js__WEBPACK_IMPORTED_MODULE_2__["default"])(
+  _Donors_vue_vue_type_script_lang_js___WEBPACK_IMPORTED_MODULE_1__["default"],
+  _Donors_vue_vue_type_template_id_64a0fcb0___WEBPACK_IMPORTED_MODULE_0__["render"],
+  _Donors_vue_vue_type_template_id_64a0fcb0___WEBPACK_IMPORTED_MODULE_0__["staticRenderFns"],
+  false,
+  null,
+  null,
+  null
+  
+)
+
+/* hot reload */
+if (false) { var api; }
+component.options.__file = "resources/js/components/Admin/Donors and Agencies/Donors.vue"
+/* harmony default export */ __webpack_exports__["default"] = (component.exports);
+
+/***/ }),
+
+/***/ "./resources/js/components/Admin/Donors and Agencies/Donors.vue?vue&type=script&lang=js&":
+/*!***********************************************************************************************!*\
+  !*** ./resources/js/components/Admin/Donors and Agencies/Donors.vue?vue&type=script&lang=js& ***!
+  \***********************************************************************************************/
+/*! exports provided: default */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony import */ var _node_modules_babel_loader_lib_index_js_ref_4_0_node_modules_vue_loader_lib_index_js_vue_loader_options_Donors_vue_vue_type_script_lang_js___WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! -!../../../../../node_modules/babel-loader/lib??ref--4-0!../../../../../node_modules/vue-loader/lib??vue-loader-options!./Donors.vue?vue&type=script&lang=js& */ "./node_modules/babel-loader/lib/index.js?!./node_modules/vue-loader/lib/index.js?!./resources/js/components/Admin/Donors and Agencies/Donors.vue?vue&type=script&lang=js&");
+/* empty/unused harmony star reexport */ /* harmony default export */ __webpack_exports__["default"] = (_node_modules_babel_loader_lib_index_js_ref_4_0_node_modules_vue_loader_lib_index_js_vue_loader_options_Donors_vue_vue_type_script_lang_js___WEBPACK_IMPORTED_MODULE_0__["default"]); 
+
+/***/ }),
+
+/***/ "./resources/js/components/Admin/Donors and Agencies/Donors.vue?vue&type=template&id=64a0fcb0&":
+/*!*****************************************************************************************************!*\
+  !*** ./resources/js/components/Admin/Donors and Agencies/Donors.vue?vue&type=template&id=64a0fcb0& ***!
+  \*****************************************************************************************************/
+/*! exports provided: render, staticRenderFns */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony import */ var _node_modules_vue_loader_lib_loaders_templateLoader_js_vue_loader_options_node_modules_vue_loader_lib_index_js_vue_loader_options_Donors_vue_vue_type_template_id_64a0fcb0___WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! -!../../../../../node_modules/vue-loader/lib/loaders/templateLoader.js??vue-loader-options!../../../../../node_modules/vue-loader/lib??vue-loader-options!./Donors.vue?vue&type=template&id=64a0fcb0& */ "./node_modules/vue-loader/lib/loaders/templateLoader.js?!./node_modules/vue-loader/lib/index.js?!./resources/js/components/Admin/Donors and Agencies/Donors.vue?vue&type=template&id=64a0fcb0&");
+/* harmony reexport (safe) */ __webpack_require__.d(__webpack_exports__, "render", function() { return _node_modules_vue_loader_lib_loaders_templateLoader_js_vue_loader_options_node_modules_vue_loader_lib_index_js_vue_loader_options_Donors_vue_vue_type_template_id_64a0fcb0___WEBPACK_IMPORTED_MODULE_0__["render"]; });
+
+/* harmony reexport (safe) */ __webpack_require__.d(__webpack_exports__, "staticRenderFns", function() { return _node_modules_vue_loader_lib_loaders_templateLoader_js_vue_loader_options_node_modules_vue_loader_lib_index_js_vue_loader_options_Donors_vue_vue_type_template_id_64a0fcb0___WEBPACK_IMPORTED_MODULE_0__["staticRenderFns"]; });
+
+
+
+/***/ }),
+
 /***/ "./resources/js/components/Admin/DonorsAndAgencies.vue":
 /*!*************************************************************!*\
   !*** ./resources/js/components/Admin/DonorsAndAgencies.vue ***!
@@ -109178,15 +110992,14 @@ __webpack_require__.r(__webpack_exports__);
 /*!***********************************************************!*\
   !*** ./resources/js/components/Reusables/AddDonation.vue ***!
   \***********************************************************/
-/*! no static exports found */
+/*! exports provided: default */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
 __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var _AddDonation_vue_vue_type_template_id_276b5131___WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ./AddDonation.vue?vue&type=template&id=276b5131& */ "./resources/js/components/Reusables/AddDonation.vue?vue&type=template&id=276b5131&");
 /* harmony import */ var _AddDonation_vue_vue_type_script_lang_js___WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ./AddDonation.vue?vue&type=script&lang=js& */ "./resources/js/components/Reusables/AddDonation.vue?vue&type=script&lang=js&");
-/* harmony reexport (unknown) */ for(var __WEBPACK_IMPORT_KEY__ in _AddDonation_vue_vue_type_script_lang_js___WEBPACK_IMPORTED_MODULE_1__) if(__WEBPACK_IMPORT_KEY__ !== 'default') (function(key) { __webpack_require__.d(__webpack_exports__, key, function() { return _AddDonation_vue_vue_type_script_lang_js___WEBPACK_IMPORTED_MODULE_1__[key]; }) }(__WEBPACK_IMPORT_KEY__));
-/* harmony import */ var _node_modules_vue_loader_lib_runtime_componentNormalizer_js__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ../../../../node_modules/vue-loader/lib/runtime/componentNormalizer.js */ "./node_modules/vue-loader/lib/runtime/componentNormalizer.js");
+/* empty/unused harmony star reexport *//* harmony import */ var _node_modules_vue_loader_lib_runtime_componentNormalizer_js__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ../../../../node_modules/vue-loader/lib/runtime/componentNormalizer.js */ "./node_modules/vue-loader/lib/runtime/componentNormalizer.js");
 
 
 
@@ -109216,7 +111029,7 @@ component.options.__file = "resources/js/components/Reusables/AddDonation.vue"
 /*!************************************************************************************!*\
   !*** ./resources/js/components/Reusables/AddDonation.vue?vue&type=script&lang=js& ***!
   \************************************************************************************/
-/*! no static exports found */
+/*! exports provided: default */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
@@ -109377,6 +111190,75 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony reexport (safe) */ __webpack_require__.d(__webpack_exports__, "render", function() { return _node_modules_vue_loader_lib_loaders_templateLoader_js_vue_loader_options_node_modules_vue_loader_lib_index_js_vue_loader_options_DonorModal_vue_vue_type_template_id_37603579___WEBPACK_IMPORTED_MODULE_0__["render"]; });
 
 /* harmony reexport (safe) */ __webpack_require__.d(__webpack_exports__, "staticRenderFns", function() { return _node_modules_vue_loader_lib_loaders_templateLoader_js_vue_loader_options_node_modules_vue_loader_lib_index_js_vue_loader_options_DonorModal_vue_vue_type_template_id_37603579___WEBPACK_IMPORTED_MODULE_0__["staticRenderFns"]; });
+
+
+
+/***/ }),
+
+/***/ "./resources/js/components/Reusables/Donors/DonorProgress.vue":
+/*!********************************************************************!*\
+  !*** ./resources/js/components/Reusables/Donors/DonorProgress.vue ***!
+  \********************************************************************/
+/*! exports provided: default */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony import */ var _DonorProgress_vue_vue_type_template_id_211a8ae3___WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ./DonorProgress.vue?vue&type=template&id=211a8ae3& */ "./resources/js/components/Reusables/Donors/DonorProgress.vue?vue&type=template&id=211a8ae3&");
+/* harmony import */ var _DonorProgress_vue_vue_type_script_lang_js___WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ./DonorProgress.vue?vue&type=script&lang=js& */ "./resources/js/components/Reusables/Donors/DonorProgress.vue?vue&type=script&lang=js&");
+/* empty/unused harmony star reexport *//* harmony import */ var _node_modules_vue_loader_lib_runtime_componentNormalizer_js__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ../../../../../node_modules/vue-loader/lib/runtime/componentNormalizer.js */ "./node_modules/vue-loader/lib/runtime/componentNormalizer.js");
+
+
+
+
+
+/* normalize component */
+
+var component = Object(_node_modules_vue_loader_lib_runtime_componentNormalizer_js__WEBPACK_IMPORTED_MODULE_2__["default"])(
+  _DonorProgress_vue_vue_type_script_lang_js___WEBPACK_IMPORTED_MODULE_1__["default"],
+  _DonorProgress_vue_vue_type_template_id_211a8ae3___WEBPACK_IMPORTED_MODULE_0__["render"],
+  _DonorProgress_vue_vue_type_template_id_211a8ae3___WEBPACK_IMPORTED_MODULE_0__["staticRenderFns"],
+  false,
+  null,
+  null,
+  null
+  
+)
+
+/* hot reload */
+if (false) { var api; }
+component.options.__file = "resources/js/components/Reusables/Donors/DonorProgress.vue"
+/* harmony default export */ __webpack_exports__["default"] = (component.exports);
+
+/***/ }),
+
+/***/ "./resources/js/components/Reusables/Donors/DonorProgress.vue?vue&type=script&lang=js&":
+/*!*********************************************************************************************!*\
+  !*** ./resources/js/components/Reusables/Donors/DonorProgress.vue?vue&type=script&lang=js& ***!
+  \*********************************************************************************************/
+/*! exports provided: default */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony import */ var _node_modules_babel_loader_lib_index_js_ref_4_0_node_modules_vue_loader_lib_index_js_vue_loader_options_DonorProgress_vue_vue_type_script_lang_js___WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! -!../../../../../node_modules/babel-loader/lib??ref--4-0!../../../../../node_modules/vue-loader/lib??vue-loader-options!./DonorProgress.vue?vue&type=script&lang=js& */ "./node_modules/babel-loader/lib/index.js?!./node_modules/vue-loader/lib/index.js?!./resources/js/components/Reusables/Donors/DonorProgress.vue?vue&type=script&lang=js&");
+/* empty/unused harmony star reexport */ /* harmony default export */ __webpack_exports__["default"] = (_node_modules_babel_loader_lib_index_js_ref_4_0_node_modules_vue_loader_lib_index_js_vue_loader_options_DonorProgress_vue_vue_type_script_lang_js___WEBPACK_IMPORTED_MODULE_0__["default"]); 
+
+/***/ }),
+
+/***/ "./resources/js/components/Reusables/Donors/DonorProgress.vue?vue&type=template&id=211a8ae3&":
+/*!***************************************************************************************************!*\
+  !*** ./resources/js/components/Reusables/Donors/DonorProgress.vue?vue&type=template&id=211a8ae3& ***!
+  \***************************************************************************************************/
+/*! exports provided: render, staticRenderFns */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony import */ var _node_modules_vue_loader_lib_loaders_templateLoader_js_vue_loader_options_node_modules_vue_loader_lib_index_js_vue_loader_options_DonorProgress_vue_vue_type_template_id_211a8ae3___WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! -!../../../../../node_modules/vue-loader/lib/loaders/templateLoader.js??vue-loader-options!../../../../../node_modules/vue-loader/lib??vue-loader-options!./DonorProgress.vue?vue&type=template&id=211a8ae3& */ "./node_modules/vue-loader/lib/loaders/templateLoader.js?!./node_modules/vue-loader/lib/index.js?!./resources/js/components/Reusables/Donors/DonorProgress.vue?vue&type=template&id=211a8ae3&");
+/* harmony reexport (safe) */ __webpack_require__.d(__webpack_exports__, "render", function() { return _node_modules_vue_loader_lib_loaders_templateLoader_js_vue_loader_options_node_modules_vue_loader_lib_index_js_vue_loader_options_DonorProgress_vue_vue_type_template_id_211a8ae3___WEBPACK_IMPORTED_MODULE_0__["render"]; });
+
+/* harmony reexport (safe) */ __webpack_require__.d(__webpack_exports__, "staticRenderFns", function() { return _node_modules_vue_loader_lib_loaders_templateLoader_js_vue_loader_options_node_modules_vue_loader_lib_index_js_vue_loader_options_DonorProgress_vue_vue_type_template_id_211a8ae3___WEBPACK_IMPORTED_MODULE_0__["staticRenderFns"]; });
 
 
 

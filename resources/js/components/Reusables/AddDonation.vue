@@ -2,7 +2,7 @@
   <b-modal id="add-donation" size="lg" hide-footer>
     <template slot="modal-title">Add Donation</template>
     <div class="modal-body">
-      <div class="row-title">Blood Donor History Questionnaire</div>
+      <div class="row-title">Register Donor</div>
       <div class="row-sub-category">Blood Program: {{MBDName}}</div>
       <div class="row-sub-category">Date: Now</div>
       <hr />

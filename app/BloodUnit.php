@@ -20,7 +20,7 @@ class BloodUnit extends Model
 
 
      public function typed_blood_unit(){
-          return $this->hasOne(TypedBloodUnit::class);
+          return $this->hasOne(TypedBloodUnit::class, 'blood_unit_id');
      }
 
      public function processed_blood_unit(){

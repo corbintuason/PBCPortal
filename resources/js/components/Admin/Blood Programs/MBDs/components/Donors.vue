@@ -13,7 +13,7 @@
     </div>
     <div class="row">
       <div class="col-md-12">
-      <donors-table :shouldSelect='false' :donors="donors"> </donors-table>
+      <donors-table :seeDonorProgress="seeDonorProgress" :shouldSelect='false' :donors="donors"> </donors-table>
         <button @click="showAddDonor" class="float-right btn btn-success">Add Donation</button>
       </div>
     </div>
@@ -46,7 +46,8 @@ export default {
   props: {
     all_dates: Array,
     donors: Array,
-    MBDName: String
+    MBDName: String,
+    seeDonorProgress: Boolean
   },
   methods: {
       showAddDonor(){

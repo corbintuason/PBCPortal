@@ -17,4 +17,5 @@ class ProcessedBloodUnit extends Model
      'blood_unit_id', 'whole_blood', 'packed_rbc', 'platelet_concentrate',
      'ffp', 'cryoprecipitate', 'cryosupernate'
      ];
+     
 }

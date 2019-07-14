@@ -21,6 +21,11 @@ Route::apiResources([
     'user' => 'API\UserController'
 ]);
 
+Route::apiResources([
+    'admin' => 'API\AdminController'
+]);
+
+
 // Route::apiResources([
 //     'donation' => 'API\DonationController'
 // ]);
@@ -67,6 +72,3 @@ Route::apiResources([
     'mbd' => 'API\MBDController'
 ]);  
 
-Route::apiResources([
-    'donor' => 'API\DonorController'
-]);

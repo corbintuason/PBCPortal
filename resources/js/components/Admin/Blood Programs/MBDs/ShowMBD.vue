@@ -39,7 +39,7 @@
                   </div>
 
                   <div class="row">
-                    <donors v-if="show_donors" :donors="donors" :MBDName="show_mbd.name" :all_dates="all_dates"></donors>
+                    <donors :seeDonorProgress="true" v-if="show_donors" :donors="donors" :MBDName="show_mbd.name" :all_dates="all_dates"></donors>
                     <!-- <schedule v-if="show_schedule" :all_dates="all_dates"></schedule> -->
                     <manpower v-if="show_manpower" :all_dates="all_dates"></manpower>
                     <equipment v-if="show_equipment"></equipment>

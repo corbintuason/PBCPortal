@@ -32,9 +32,8 @@
                         <!-- NVBSP20180000453-->
                          <tr v-for="(typed_blood_unit, index) in typed_blood_units" :key="index"> 
                           <td>{{typed_blood_unit.id}}</td>
-                          <td>{{typed_blood_unit.donation_code}}</td>
+                          <td>{{typed_blood_unit.code}}</td>
                           <td>{{typed_blood_unit.blood_type}}</td>
-                          <td>{{typed_blood_unit.quantity}}</td>
                           <td>
                               <div class="form-group" :class="{ 'form-group--error': typed_blood_unit.$error }">
                             <input
@@ -185,13 +184,13 @@ export default {
         .forEach((val, index) => {
           axios
             .post("/api/processed_blood_unit", {
-              donation_id: val.donation_id,
               whole_blood: val.whole_blood,
               packed_rbc: val.packed_rbc,
               platelet_concentrate: val.platelet_concentrate,
               ffp: val.ffp,
               cryoprecipitate: val.cryoprecipitate,
-              cryosupernate: val.cryosupernate
+              cryosupernate: val.cryosupernate,
+              blood_unit_id: this.typed_blood_units[index].id
             })
 
             /* 2. Update status of Blood Units to Processing */
@@ -207,6 +206,7 @@ export default {
             title: "Blood Unit Processed"
           });
           this.$Progress.finish();
+          this.loadTypedUnits();
 
     },
     // Updates Blood Unit to Processed

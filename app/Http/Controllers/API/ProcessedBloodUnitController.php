@@ -34,7 +34,7 @@ class ProcessedBloodUnitController extends Controller
     {
         // dd($request->units[0]);
         $validator = $request->validate([
-           'blood_unit_id' => 'required|string|max:191',
+           'blood_unit_id' => 'required|integer',
            'whole_blood' => 'required|integer',
            'packed_rbc' => 'required|integer',
            'platelet_concentrate' => 'required|integer',

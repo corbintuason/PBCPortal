@@ -18,7 +18,7 @@
                     <thead>
                       <tr>
                         <th>#</th>
-                        <th>Donation ID</th>
+                        <th>Donation Code</th>
                         <th>HbSag</th>
                         <th>HCV</th>
                         <th>HIV</th>
@@ -32,8 +32,8 @@
                         v-for="(processed_blood_unit, index) in processed_blood_units"
                         :key="index"
                       >
-                        <td>{{processed_blood_units[index].id}}</td>
-                        <td>{{processed_blood_units[index].donation_id}}</td>
+                        <td>{{index}}</td>
+                        <td>{{processed_blood_units[index].code}}</td>
                         <td>
                           <select class="custom-select" v-model="testing_blood_units[index].hbSag">
                             <option disabled value>Please select one</option>
@@ -86,6 +86,7 @@
                       @click="testBlood"
                       class="btn btn-success float-right"
                     >Update</button>
+                    {{testing_blood_units}}
                   </div>
                 </div>
               </div>
@@ -117,7 +118,6 @@ export default {
     populateTestingUnits() {
       this.processed_blood_units.forEach((val, index) => {
         this.testing_blood_units.push({
-          donation_id: val.donation_id,
           id: val.id
         });
       });
@@ -177,12 +177,12 @@ export default {
       this.testing_blood_units.forEach((val, index) => {
         axios
           .post("/api/tested_blood_unit", {
-            donation_id: val.donation_id,
             hbSag: val.hbSag,
             HCV: val.HCV,
             HIV: val.HIV,
             malaria: val.malaria,
-            syphilis: val.syphilis
+            syphilis: val.syphilis,
+            blood_unit_id: this.processed_blood_units[index].id
           })
           /* 2. Update status of Blood Units to Tested */
           .then(() => {
@@ -193,8 +193,8 @@ export default {
               this.storeBloodUnit(val);
             } else {
               test_status = "Tested - Fail";
-              this.markAsReactiveUnit(val);
             }
+
             this.updateToTested(val, test_status);
           })
           .catch(err => {
@@ -212,6 +212,7 @@ export default {
     },
     // Updates Blood Unit to Processed
     updateToTested(unit, test_status) {
+      console.log(test_status);
       axios.put("/api/blood_unit/" + unit.id, {
         status: test_status
       });
@@ -226,7 +227,7 @@ export default {
         malaria: unit.malaria,
         syphilis: unit.syphilis
       });
-    }
+    },
 
     /* 
     ~ [END] Blood Processing Methods ~

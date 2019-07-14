@@ -4,12 +4,12 @@ namespace App\Http\Controllers\API;
 
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
-use App\TestedBloodUnit;
+use App\Admin;
+use App\Http\Resources\Admin as AdminResource;
+use App\Http\Resources\AdminCollection;
 use Illuminate\Support\Facades\Hash;
-use App\Http\Resources\TestedBloodUnit as TestedBloodUnitResource;
-use App\Http\Resources\TestedBloodUnitCollection;
 
-class TestedBloodUnitController extends Controller
+class AdminController extends Controller
 {
     /**
      * Display a listing of the resource.
@@ -18,9 +18,14 @@ class TestedBloodUnitController extends Controller
      */
     public function index(Request $request)
     {
-        $query = TestedBloodUnit::query()->get();
-        
-        return new TestedBloodUnitCollection(TestedBloodUnit::all());
+
+        $query = Admin::query();
+        $email = $request->get('email');
+        if($email){
+            $query->where('email', $email);
+        }
+    
+        return new AdminCollection($query->get());
     }
 
     /**
@@ -32,20 +37,15 @@ class TestedBloodUnitController extends Controller
     public function store(Request $request)
     {
         $this->validate($request,[
-           'blood_unit_id' => 'required|integer',
-           'hbSag' => 'required|string',
-           'HCV' => 'required|string',
-           'HIV' => 'required|string',
-           'malaria' => 'required|string',
-           'syphilis' => 'required|string',
+           'name' => 'required|string|max:191',
+           'email' => 'required|string|email|max:255|unique:users',
+           'password' => 'required|string|min:8'
         ]);
-        return TestedBloodUnit::create([
-            'blood_unit_id' => $request['blood_unit_id'],
-            'hbSag' => $request['hbSag'],
-            'HCV' => $request['HCV'],
-            'HIV' => $request['HIV'],
-            'malaria' => $request['malaria'],
-            'syphilis' => $request['syphilis'],
+        return User::create([
+            'name' => $request['name'],
+            'email' => $request['email'],
+            'type' => $request['type'],
+            'password' => Hash::make($request['password']),
         ]);
     }
 
@@ -57,7 +57,7 @@ class TestedBloodUnitController extends Controller
      */
     public function show($id)
     {
-        return new TestedBloodUnitCollection(TestedBloodUnit::findorFail($id));
+        return new AdminResource(Admin::findorFail($id));
     }
 
     /**
