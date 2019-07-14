@@ -33,35 +33,56 @@
         </div>
       </div>
 
-      <div class="row-title">Donation Progress </div>
+      <div class="row-title"> {{mbd.name}} </div>
+        <div class = "row-sub-category"> Donation Progress </div>
+
         <div class="row">
           <div class = "col-md-4">
               Progress Bar
           </div>
-          <div class = "col-md-6">
-              <ul class="list-group">
-                <li class="list-group-item disabled">Donor History</li>
-                <li class="list-group-item">Blood Unit</li>
-            </ul>
+          <div class = "col-md-8">
+              <table class = "table table-sm table-striped">
+                <thead>
+                  <tr>
+                    <th> Requirement </th>
+                    <th> Status </th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr>
+                    <td> <a href = "#" @click.prevent="openDonorHistory"> Donor History </a></td>
+                    <th> <i class="fas fa-check-square green "></i> </th>
+                  </tr>
+                  <tr>
+                    <td> Blood Unit </td>
+                    <th> <i class="fas fa-check-square green"></i> </th>
+                  </tr>
+                </tbody>
+              </table>
           </div>
         </div>
-      <!-- If Donor does not have any donations -->
+      <donor-history :donor="donor"> </donor-history>
     </div>
   </b-modal>
 </template>
 
 <script>
+import donorHistory from "C:/xampp/htdocs/PBCPortal/resources/js/components/Reusables/Donors/DonorHistory.vue";
+
 export default {
   data() {
     return {};
   },
   props: {
     donor: Object,
-
+    mbd: Object
+  },
+  components:{
+    "donor-history": donorHistory
   },
   methods: {
-    close() {
-      this.$emit("close");
+    openDonorHistory(){
+      this.$bvModal.show('donor-history');
     }
   },
 

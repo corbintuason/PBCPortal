@@ -4,12 +4,12 @@ namespace App\Http\Controllers\API;
 
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
-use App\Donation;
-use App\Http\Resources\DonationCollection;
-use App\Http\Resources\Donation as DonationResource;
+use App\MBDDonation;
+use App\Http\Resources\MBDDonationCollection;
+use App\Http\Resources\MBDDonation as MBDDonationResource;
 
 
-class DonationController extends Controller
+class MBDDonationController extends Controller
 {
     /**
      * Display a listing of the resource.
@@ -20,9 +20,9 @@ class DonationController extends Controller
     {
       
 
-        $query = Donation::query();
+        $query = MBDDonation::query();
     
-        return new DonationCollection($query->get());
+        return new MBDDonationCollection($query->get());
     }
 
     /**
@@ -37,9 +37,10 @@ class DonationController extends Controller
             'donor_id' => 'required',
             'status' => 'required',
          ]);
-         return Donation::create([
+         return MBDDonation::create([
              'donor_id' => $request['donor_id'],
-             'status' => $request['status']
+             'status' => $request['status'],
+             'mbd_id' => $request['mbd_id']
          ]);
     }
 
@@ -51,7 +52,7 @@ class DonationController extends Controller
      */
     public function show($id)
     {
-        return new DonationResource(Donation::findOrFail($id));
+        return new MBDDonationResource(MBDDonation::findOrFail($id));
     }
 
     /**

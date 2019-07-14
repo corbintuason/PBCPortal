@@ -39,7 +39,7 @@
                   </div>
 
                   <div class="row">
-                    <donors :seeDonorProgress="true" v-if="show_donors" :donors="donors" :MBDName="show_mbd.name" :all_dates="all_dates"></donors>
+                    <donors :seeDonorProgress="true" :mbd="show_mbd" :all_dates="all_dates"></donors>
                     <!-- <schedule v-if="show_schedule" :all_dates="all_dates"></schedule> -->
                     <manpower v-if="show_manpower" :all_dates="all_dates"></manpower>
                     <equipment v-if="show_equipment"></equipment>
@@ -78,7 +78,6 @@ export default {
 
       all_dates: [],
 
-      donors:[],
     };
   },
   components: {
@@ -111,7 +110,6 @@ export default {
         .then(() => {
           this.show_mbd_fetched = true;
           this.differenceInDates();
-          this.loadDonors();
         });
     },
     showDonors() {
@@ -138,16 +136,13 @@ export default {
         (this.show_schedule = false),
         (this.show_donors = false);
     },
-    loadDonors(){
-      console.log(this.show_mbd.donation_lists);
-      this.show_mbd.donation_lists.forEach((val, index) => {
-        this.donors.push(val.donation.donor);
-      });
-    },
   },
 
   created() {
     this.loadShowMBD();
+    Fire.$on("AfterDonationAdded", () => {
+     
+    });
   }
 };
 </script>

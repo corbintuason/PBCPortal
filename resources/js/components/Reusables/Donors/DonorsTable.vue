@@ -14,7 +14,7 @@
     </thead>
     <tbody>
 
-      <tr v-for="donor in donors" :key="donor.id">
+      <tr v-for="(donor, index) in donors" :key="index">
         <td><a href = "#" @click.prevent="showDonorModal(donor)"> {{donor.id}} </a> </td>
         <td>{{donor.last_name}}</td>
         <td>{{donor.first_name}}</td>
@@ -25,7 +25,8 @@
     </tbody>
   </table>
 <donor-modal v-if="modal_donor != null" :donor="modal_donor"> </donor-modal>
-<donor-progress v-if="donor_progress != null" :donor="donor_progress"> </donor-progress>
+
+<donor-progress v-if="donor_progress != null" :donor="donor_progress" :mbd="mbd"> </donor-progress>
 
 
 </div>
@@ -42,13 +43,13 @@ export default {
         modal_donor: null,
         selected_donor:{},
         donor_progress: null,
-
     };
   },
   props: {
     donors: Array,
     shouldSelect: Boolean,
     seeDonorProgress: Boolean,
+    mbd: Object,
   },
   components:{
       'donor-modal': donorModal,

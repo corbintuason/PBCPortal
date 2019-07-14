@@ -12,15 +12,16 @@
       </div>
     </div>
     <div class="row">
+      
       <div class="col-md-12">
-      <donors-table :seeDonorProgress="seeDonorProgress" :shouldSelect='false' :donors="donors"> </donors-table>
+      <donors-table :seeDonorProgress="seeDonorProgress" :shouldSelect='false' :mbd="mbd" :donors="donors"> </donors-table>
         <button @click="showAddDonor" class="float-right btn btn-success">Add Donation</button>
       </div>
     </div>
     <!-- <donor-modal 
       :donor="modal_donor"
     ></donor-modal> -->
-    <add-donation :MBDName="MBDName"> </add-donation>
+    <add-donation :mbd="mbd"> </add-donation>
   </div>
 </template>
 
@@ -35,6 +36,8 @@ export default {
         modal_donor :{
 
         },
+        donors:[],
+       
         // modal_donations:[]
     };
   },
@@ -45,8 +48,7 @@ export default {
   },
   props: {
     all_dates: Array,
-    donors: Array,
-    MBDName: String,
+    mbd: Object,
     seeDonorProgress: Boolean
   },
   methods: {
@@ -57,14 +59,14 @@ export default {
       this.modal_donor = donor;
       this.$bvModal.show('donor-modal');
     },
-    // showDonorsInDate(donor){
-    //   axios.get('/api/user', {
-    //     params:{
-    //     }
-    //   });
-    // }
+    loadDonors(){
+      this.mbd.mbd_donations.forEach((val, index)=>{
+        this.donors.push(val.donor);
+      })
+    }
   },
   created() {
+    this.loadDonors();
   }
 };
 </script>

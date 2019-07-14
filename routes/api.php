@@ -26,6 +26,11 @@ Route::apiResources([
 ]);
 
 
+Route::apiResources([
+    'mbd_donation' => 'API\MBDDonationController'
+]);
+
+
 // Route::apiResources([
 //     'donation' => 'API\DonationController'
 // ]);

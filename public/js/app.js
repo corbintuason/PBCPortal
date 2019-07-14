@@ -13807,8 +13807,7 @@ __webpack_require__.r(__webpack_exports__);
       show_schedule: false,
       show_donors: true,
       difference: 0,
-      all_dates: [],
-      donors: []
+      all_dates: []
     };
   },
   components: {
@@ -13844,8 +13843,6 @@ __webpack_require__.r(__webpack_exports__);
         _this.show_mbd_fetched = true;
 
         _this.differenceInDates();
-
-        _this.loadDonors();
       });
     },
     showDonors: function showDonors() {
@@ -13859,18 +13856,11 @@ __webpack_require__.r(__webpack_exports__);
     },
     showEquipment: function showEquipment() {
       this.show_manpower = false, this.show_equipment = true, this.show_schedule = false, this.show_donors = false;
-    },
-    loadDonors: function loadDonors() {
-      var _this2 = this;
-
-      console.log(this.show_mbd.donation_lists);
-      this.show_mbd.donation_lists.forEach(function (val, index) {
-        _this2.donors.push(val.donation.donor);
-      });
     }
   },
   created: function created() {
     this.loadShowMBD();
+    Fire.$on("AfterDonationAdded", function () {});
   }
 });
 
@@ -13914,13 +13904,15 @@ __webpack_require__.r(__webpack_exports__);
 //
 //
 //
+//
 
 
 
 /* harmony default export */ __webpack_exports__["default"] = ({
   data: function data() {
     return {
-      modal_donor: {} // modal_donations:[]
+      modal_donor: {},
+      donors: [] // modal_donations:[]
 
     };
   },
@@ -13931,8 +13923,7 @@ __webpack_require__.r(__webpack_exports__);
   },
   props: {
     all_dates: Array,
-    donors: Array,
-    MBDName: String,
+    mbd: Object,
     seeDonorProgress: Boolean
   },
   methods: {
@@ -13942,9 +13933,18 @@ __webpack_require__.r(__webpack_exports__);
     showDonorModal: function showDonorModal(donor) {
       this.modal_donor = donor;
       this.$bvModal.show('donor-modal');
+    },
+    loadDonors: function loadDonors() {
+      var _this = this;
+
+      this.mbd.mbd_donations.forEach(function (val, index) {
+        _this.donors.push(val.donor);
+      });
     }
   },
-  created: function created() {}
+  created: function created() {
+    this.loadDonors();
+  }
 });
 
 /***/ }),
@@ -15443,100 +15443,6 @@ __webpack_require__.r(__webpack_exports__);
 //
 //
 //
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
 
 /* harmony default export */ __webpack_exports__["default"] = ({
   data: function data() {
@@ -15545,36 +15451,11 @@ __webpack_require__.r(__webpack_exports__);
       selected: "",
       step: 1,
       isNextDisabled: false,
-      donation: {
-        donor: null
-      },
-      donorHistoryForms: {
-        category: [{
-          title: "Are you?",
-          questions: ["Feeling healthy and well today?", "Currently taking medication?", "Have you ever had any vaccination?"],
-          answers: [false, false, false]
-        }, {
-          title: "In the past 3 days",
-          questions: ["Have you taken aspirin or anything that has aspirin in it?", "Have you been pregnant or are you pregnant now?"],
-          answers: [false, false]
-        }, {
-          title: "In the past 12 weeks, have you",
-          questions: ["Donated blood, platelets or plasma?"],
-          answers: [false]
-        }, {
-          title: "In the past 12 months, have you",
-          questions: ["Had a blood transfusion", "Had surgical operation? Dental Operation?", "Had a tattoo, ear, or body piercing, accidental contact with blood, needle-stick injury and acupuncture", "Had sexual contact with high-risk individuals?", "Had sexual contact with a person who has worked abroad?", "Engaged in casual sex?", "Lived with a person who has hepatitis?", "Have you been imprisoned?", "Have any of your relatives had Creutzfeldt-Jacob (Mad Cow) disease?"],
-          answers: [false, false, false, false, false, false, false]
-        }, {
-          title: "Have you ever",
-          questions: ["Lived outside your place of residence?", "Lived outside the Philippines?", "Used needles to take drugs, steroids, or anything not prescribed by your doctor?", "Used clotting factor concentrates?", "Had a positive test for HIV, Hepatitis, Syphilis, or Malaria?", "Been told to have or treated for genital wart, syphilis, gonorrhea, or other Sexually Transmittable Infections?", "Had any type of cancer? For example, leukemia?", "Had any problems with your heart or lungs?", "Had a bleeding condition or a blood disease?", "Are you giving blood because you want to be tested for HIV or Hepatitis Virus?", "Are you aware that if you have HIV or Hepatitis, you can give it to someone else though you may feel well and have a negative HIV/Hepatitis test?"],
-          answers: [false, false, false, false, false, false, false, false, false, false, false]
-        }]
-      }
+      donor: null
     };
   },
   props: {
-    MBDName: String,
+    mbd: Object,
     Agency: Object,
     Date: Date
   },
@@ -15587,8 +15468,21 @@ __webpack_require__.r(__webpack_exports__);
     }
   },
   methods: {
+    registerDonor: function registerDonor() {
+      var _this = this;
+
+      axios.post("/api/mbd_donation", {
+        donor_id: this.donor.id,
+        status: "Registered",
+        mbd_id: this.mbd.id
+      }).then(function () {
+        Fire.$emit("AfterDonationAdded");
+      }).then(function () {
+        _this.$bvModal.hide('add-donation');
+      });
+    },
     onDonorChange: function onDonorChange(val) {
-      this.donation.donor = val;
+      this.donor = val;
     },
     close: function close() {
       this.$emit("close");
@@ -15952,10 +15846,10 @@ __webpack_require__.r(__webpack_exports__);
 
 /***/ }),
 
-/***/ "./node_modules/babel-loader/lib/index.js?!./node_modules/vue-loader/lib/index.js?!./resources/js/components/Reusables/Donors/DonorProgress.vue?vue&type=script&lang=js&":
-/*!*****************************************************************************************************************************************************************************************!*\
-  !*** ./node_modules/babel-loader/lib??ref--4-0!./node_modules/vue-loader/lib??vue-loader-options!./resources/js/components/Reusables/Donors/DonorProgress.vue?vue&type=script&lang=js& ***!
-  \*****************************************************************************************************************************************************************************************/
+/***/ "./node_modules/babel-loader/lib/index.js?!./node_modules/vue-loader/lib/index.js?!./resources/js/components/Reusables/Donors/DonorHistory.vue?vue&type=script&lang=js&":
+/*!****************************************************************************************************************************************************************************************!*\
+  !*** ./node_modules/babel-loader/lib??ref--4-0!./node_modules/vue-loader/lib??vue-loader-options!./resources/js/components/Reusables/Donors/DonorHistory.vue?vue&type=script&lang=js& ***!
+  \****************************************************************************************************************************************************************************************/
 /*! exports provided: default */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
@@ -16013,9 +15907,51 @@ __webpack_require__.r(__webpack_exports__);
 //
 //
 //
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
 /* harmony default export */ __webpack_exports__["default"] = ({
   data: function data() {
-    return {};
+    return {
+      donorHistoryForms: {
+        category: [{
+          title: "Are you?",
+          questions: ["Feeling healthy and well today?", "Currently taking medication?", "Have you ever had any vaccination?"],
+          answers: [false, false, false]
+        }, {
+          title: "In the past 3 days",
+          questions: ["Have you taken aspirin or anything that has aspirin in it?", "Have you been pregnant or are you pregnant now?"],
+          answers: [false, false]
+        }, {
+          title: "In the past 12 weeks, have you",
+          questions: ["Donated blood, platelets or plasma?"],
+          answers: [false]
+        }, {
+          title: "In the past 12 months, have you",
+          questions: ["Had a blood transfusion", "Had surgical operation? Dental Operation?", "Had a tattoo, ear, or body piercing, accidental contact with blood, needle-stick injury and acupuncture", "Had sexual contact with high-risk individuals?", "Had sexual contact with a person who has worked abroad?", "Engaged in casual sex?", "Lived with a person who has hepatitis?", "Have you been imprisoned?", "Have any of your relatives had Creutzfeldt-Jacob (Mad Cow) disease?"],
+          answers: [false, false, false, false, false, false, false]
+        }, {
+          title: "Have you ever",
+          questions: ["Lived outside your place of residence?", "Lived outside the Philippines?", "Used needles to take drugs, steroids, or anything not prescribed by your doctor?", "Used clotting factor concentrates?", "Had a positive test for HIV, Hepatitis, Syphilis, or Malaria?", "Been told to have or treated for genital wart, syphilis, gonorrhea, or other Sexually Transmittable Infections?", "Had any type of cancer? For example, leukemia?", "Had any problems with your heart or lungs?", "Had a bleeding condition or a blood disease?", "Are you giving blood because you want to be tested for HIV or Hepatitis Virus?", "Are you aware that if you have HIV or Hepatitis, you can give it to someone else though you may feel well and have a negative HIV/Hepatitis test?"],
+          answers: [false, false, false, false, false, false, false, false, false, false, false]
+        }]
+      }
+    };
   },
   props: {
     donor: Object
@@ -16023,6 +15959,106 @@ __webpack_require__.r(__webpack_exports__);
   methods: {
     close: function close() {
       this.$emit("close");
+    }
+  },
+  mounted: function mounted() {}
+});
+
+/***/ }),
+
+/***/ "./node_modules/babel-loader/lib/index.js?!./node_modules/vue-loader/lib/index.js?!./resources/js/components/Reusables/Donors/DonorProgress.vue?vue&type=script&lang=js&":
+/*!*****************************************************************************************************************************************************************************************!*\
+  !*** ./node_modules/babel-loader/lib??ref--4-0!./node_modules/vue-loader/lib??vue-loader-options!./resources/js/components/Reusables/Donors/DonorProgress.vue?vue&type=script&lang=js& ***!
+  \*****************************************************************************************************************************************************************************************/
+/*! exports provided: default */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony import */ var C_xampp_htdocs_PBCPortal_resources_js_components_Reusables_Donors_DonorHistory_vue__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ./resources/js/components/Reusables/Donors/DonorHistory.vue */ "./resources/js/components/Reusables/Donors/DonorHistory.vue");
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+
+/* harmony default export */ __webpack_exports__["default"] = ({
+  data: function data() {
+    return {};
+  },
+  props: {
+    donor: Object,
+    mbd: Object
+  },
+  components: {
+    "donor-history": C_xampp_htdocs_PBCPortal_resources_js_components_Reusables_Donors_DonorHistory_vue__WEBPACK_IMPORTED_MODULE_0__["default"]
+  },
+  methods: {
+    openDonorHistory: function openDonorHistory() {
+      this.$bvModal.show('donor-history');
     }
   },
   mounted: function mounted() {}
@@ -16075,6 +16111,7 @@ __webpack_require__.r(__webpack_exports__);
 //
 //
 //
+//
 
 
 /* harmony default export */ __webpack_exports__["default"] = ({
@@ -16088,7 +16125,8 @@ __webpack_require__.r(__webpack_exports__);
   props: {
     donors: Array,
     shouldSelect: Boolean,
-    seeDonorProgress: Boolean
+    seeDonorProgress: Boolean,
+    mbd: Object
   },
   components: {
     'donor-modal': C_xampp_htdocs_PBCPortal_resources_js_components_Reusables_DonorModal_vue__WEBPACK_IMPORTED_MODULE_0__["default"],
@@ -84243,16 +84281,13 @@ var render = function() {
                           "div",
                           { staticClass: "row" },
                           [
-                            _vm.show_donors
-                              ? _c("donors", {
-                                  attrs: {
-                                    seeDonorProgress: true,
-                                    donors: _vm.donors,
-                                    MBDName: _vm.show_mbd.name,
-                                    all_dates: _vm.all_dates
-                                  }
-                                })
-                              : _vm._e(),
+                            _c("donors", {
+                              attrs: {
+                                seeDonorProgress: true,
+                                mbd: _vm.show_mbd,
+                                all_dates: _vm.all_dates
+                              }
+                            }),
                             _vm._v(" "),
                             _vm.show_manpower
                               ? _c("manpower", {
@@ -84328,6 +84363,7 @@ var render = function() {
               attrs: {
                 seeDonorProgress: _vm.seeDonorProgress,
                 shouldSelect: false,
+                mbd: _vm.mbd,
                 donors: _vm.donors
               }
             }),
@@ -84345,7 +84381,7 @@ var render = function() {
         )
       ]),
       _vm._v(" "),
-      _c("add-donation", { attrs: { MBDName: _vm.MBDName } })
+      _c("add-donation", { attrs: { mbd: _vm.mbd } })
     ],
     1
   )
@@ -86620,7 +86656,7 @@ var render = function() {
         _c("div", { staticClass: "row-title" }, [_vm._v("Register Donor")]),
         _vm._v(" "),
         _c("div", { staticClass: "row-sub-category" }, [
-          _vm._v("Blood Program: " + _vm._s(_vm.MBDName))
+          _vm._v("Blood Program: " + _vm._s(_vm.mbd.name))
         ]),
         _vm._v(" "),
         _c("div", { staticClass: "row-sub-category" }, [_vm._v("Date: Now")]),
@@ -86645,14 +86681,13 @@ var render = function() {
           [
             _c("div", { staticClass: "row" }, [
               _c("div", { staticClass: "col-md-12" }, [
-                _c("div", { staticClass: "row-sub-category" }, [
-                  _vm._v("I. Personal Details")
-                ]),
-                _vm._v(" "),
                 _c(
                   "div",
                   { staticClass: "container" },
                   [
+                    _vm._v(
+                      "\n            " + _vm._s(_vm.donor) + "\n            "
+                    ),
                     _c(
                       "b-form-group",
                       [
@@ -86730,242 +86765,14 @@ var render = function() {
         ),
         _vm._v(" "),
         _c(
-          "div",
+          "button",
           {
-            directives: [
-              {
-                name: "show",
-                rawName: "v-show",
-                value: _vm.step === 2,
-                expression: "step ===2"
-              }
-            ],
-            staticClass: "donorHistory"
+            staticClass: "btn btn-success float-right",
+            attrs: { disabled: _vm.donor == null },
+            on: { click: _vm.registerDonor }
           },
-          [
-            _c("div", { staticClass: "row" }, [
-              _c(
-                "div",
-                { staticClass: "col-md-12" },
-                [
-                  _c("div", { staticClass: "row-sub-category" }, [
-                    _vm._v("II. Donor History")
-                  ]),
-                  _vm._v(" "),
-                  _vm._l(_vm.donorHistoryForms.category, function(
-                    category,
-                    index
-                  ) {
-                    return _c(
-                      "table",
-                      {
-                        key: index,
-                        staticClass: "table table-hover table-sm table-striped"
-                      },
-                      [
-                        _c("thead"),
-                        _vm._v(" "),
-                        _c(
-                          "tbody",
-                          [
-                            _c("tr", [
-                              _c("th", [_vm._v(_vm._s(category.title))]),
-                              _vm._v(" "),
-                              _c("th")
-                            ]),
-                            _vm._v(" "),
-                            _vm._l(category.questions, function(
-                              question,
-                              index
-                            ) {
-                              return _c("tr", { key: index }, [
-                                _c("td", [_vm._v(_vm._s(question))]),
-                                _vm._v(" "),
-                                _c("td", [
-                                  _c("input", {
-                                    directives: [
-                                      {
-                                        name: "model",
-                                        rawName: "v-model",
-                                        value: category.answers[index],
-                                        expression: "category.answers[index]"
-                                      }
-                                    ],
-                                    staticClass: "form-check-input",
-                                    attrs: { type: "checkbox", value: "true" },
-                                    domProps: {
-                                      checked: Array.isArray(
-                                        category.answers[index]
-                                      )
-                                        ? _vm._i(
-                                            category.answers[index],
-                                            "true"
-                                          ) > -1
-                                        : category.answers[index]
-                                    },
-                                    on: {
-                                      change: function($event) {
-                                        var $$a = category.answers[index],
-                                          $$el = $event.target,
-                                          $$c = $$el.checked ? true : false
-                                        if (Array.isArray($$a)) {
-                                          var $$v = "true",
-                                            $$i = _vm._i($$a, $$v)
-                                          if ($$el.checked) {
-                                            $$i < 0 &&
-                                              _vm.$set(
-                                                category.answers,
-                                                index,
-                                                $$a.concat([$$v])
-                                              )
-                                          } else {
-                                            $$i > -1 &&
-                                              _vm.$set(
-                                                category.answers,
-                                                index,
-                                                $$a
-                                                  .slice(0, $$i)
-                                                  .concat($$a.slice($$i + 1))
-                                              )
-                                          }
-                                        } else {
-                                          _vm.$set(category.answers, index, $$c)
-                                        }
-                                      }
-                                    }
-                                  })
-                                ])
-                              ])
-                            })
-                          ],
-                          2
-                        )
-                      ]
-                    )
-                  })
-                ],
-                2
-              )
-            ])
-          ]
-        ),
-        _vm._v(" "),
-        _c(
-          "div",
-          {
-            directives: [
-              {
-                name: "show",
-                rawName: "v-show",
-                value: _vm.step === 3,
-                expression: "step===3"
-              }
-            ],
-            staticClass: "verdict"
-          },
-          [
-            _c("div", { staticClass: "row" }, [
-              _c("div", { staticClass: "col-md-12" }, [
-                _c("div", { staticClass: "row-sub-category" }, [
-                  _vm._v("III. Verdict")
-                ]),
-                _vm._v(" "),
-                _c(
-                  "div",
-                  { staticClass: "alert alert-info", attrs: { role: "alert" } },
-                  [
-                    _vm._v(
-                      "\n              Donor will be marked as\n             "
-                    ),
-                    _c("div", { staticClass: "form-check form-check-inline" }, [
-                      _c("input", {
-                        staticClass: "form-check-input",
-                        attrs: {
-                          type: "radio",
-                          name: "inlineRadioOptions",
-                          id: "inlineRadio1",
-                          value: "Pass"
-                        }
-                      }),
-                      _vm._v(" "),
-                      _c(
-                        "label",
-                        {
-                          staticClass: "form-check-label",
-                          attrs: { for: "inlineRadio1" }
-                        },
-                        [_vm._v("Pass")]
-                      )
-                    ]),
-                    _vm._v(" "),
-                    _c("div", { staticClass: "form-check form-check-inline" }, [
-                      _c("input", {
-                        staticClass: "form-check-input",
-                        attrs: {
-                          type: "radio",
-                          name: "inlineRadioOptions",
-                          id: "inlineRadio2",
-                          value: "Fail"
-                        }
-                      }),
-                      _vm._v(" "),
-                      _c(
-                        "label",
-                        {
-                          staticClass: "form-check-label",
-                          attrs: { for: "inlineRadio2" }
-                        },
-                        [_vm._v("Fail")]
-                      )
-                    ])
-                  ]
-                ),
-                _vm._v(" "),
-                _c("div", { staticClass: "form-group" }, [
-                  _c("label", { attrs: { for: "remarks" } }, [
-                    _vm._v("Remarks:")
-                  ]),
-                  _vm._v(" "),
-                  _c("textarea", {
-                    staticClass: "form-control",
-                    attrs: { rows: "5", id: "remarks" }
-                  })
-                ])
-              ])
-            ])
-          ]
-        ),
-        _vm._v(" "),
-        _c("div", { staticClass: "button-group float-right" }, [
-          _vm.step != 1
-            ? _c(
-                "button",
-                {
-                  staticClass: "btn btn-warning",
-                  on: {
-                    click: function($event) {
-                      _vm.step -= 1
-                    }
-                  }
-                },
-                [_vm._v("Previous")]
-              )
-            : _vm._e(),
-          _vm._v(" "),
-          _c(
-            "button",
-            {
-              staticClass: "btn btn-success",
-              attrs: { disabled: _vm.donation.donor == null },
-              on: {
-                click: function($event) {
-                  _vm.step += 1
-                }
-              }
-            },
-            [_vm._v("Next")]
-          )
-        ])
+          [_vm._v("Register")]
+        )
       ])
     ],
     2
@@ -87325,7 +87132,7 @@ var render = function() {
         _vm._v(" "),
         _c("div", { staticClass: "row-title" }, [_vm._v("Donation History")]),
         _vm._v(" "),
-        _vm.donor.donations.length
+        _vm.donor.mbd_donations.length
           ? _c("div", [
               _c("div", { staticClass: "row donor-short-profile" }, [
                 _c("div", { staticClass: "col-md-4" }, [
@@ -87393,6 +87200,204 @@ render._withStripped = true
 
 /***/ }),
 
+/***/ "./node_modules/vue-loader/lib/loaders/templateLoader.js?!./node_modules/vue-loader/lib/index.js?!./resources/js/components/Reusables/Donors/DonorHistory.vue?vue&type=template&id=8c77a664&":
+/*!********************************************************************************************************************************************************************************************************************************!*\
+  !*** ./node_modules/vue-loader/lib/loaders/templateLoader.js??vue-loader-options!./node_modules/vue-loader/lib??vue-loader-options!./resources/js/components/Reusables/Donors/DonorHistory.vue?vue&type=template&id=8c77a664& ***!
+  \********************************************************************************************************************************************************************************************************************************/
+/*! exports provided: render, staticRenderFns */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "render", function() { return render; });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "staticRenderFns", function() { return staticRenderFns; });
+var render = function() {
+  var _vm = this
+  var _h = _vm.$createElement
+  var _c = _vm._self._c || _h
+  return _c(
+    "b-modal",
+    { attrs: { id: "donor-history", size: "lg", scrollable: "" } },
+    [
+      _c("template", { slot: "modal-title" }, [
+        _vm._v(_vm._s(_vm.donor.first_name) + " " + _vm._s(_vm.donor.last_name))
+      ]),
+      _vm._v(" "),
+      _c("div", { staticClass: "modal-body" }, [
+        _c("div", { staticClass: "row" }, [
+          _c(
+            "div",
+            { staticClass: "col-md-12" },
+            [
+              _c("div", { staticClass: "row-title" }, [
+                _vm._v("Donor History")
+              ]),
+              _vm._v(" "),
+              _vm._l(_vm.donorHistoryForms.category, function(category, index) {
+                return _c(
+                  "table",
+                  {
+                    key: index,
+                    staticClass: "table table-hover table-sm table-striped"
+                  },
+                  [
+                    _c("thead"),
+                    _vm._v(" "),
+                    _c(
+                      "tbody",
+                      [
+                        _c("tr", [
+                          _c("th", [_vm._v(_vm._s(category.title))]),
+                          _vm._v(" "),
+                          _c("th")
+                        ]),
+                        _vm._v(" "),
+                        _vm._l(category.questions, function(question, index) {
+                          return _c("tr", { key: index }, [
+                            _c("td", [_vm._v(_vm._s(question))]),
+                            _vm._v(" "),
+                            _c("td", [
+                              _c("input", {
+                                directives: [
+                                  {
+                                    name: "model",
+                                    rawName: "v-model",
+                                    value: category.answers[index],
+                                    expression: "category.answers[index]"
+                                  }
+                                ],
+                                staticClass: "form-check-input",
+                                attrs: { type: "checkbox", value: "true" },
+                                domProps: {
+                                  checked: Array.isArray(
+                                    category.answers[index]
+                                  )
+                                    ? _vm._i(category.answers[index], "true") >
+                                      -1
+                                    : category.answers[index]
+                                },
+                                on: {
+                                  change: function($event) {
+                                    var $$a = category.answers[index],
+                                      $$el = $event.target,
+                                      $$c = $$el.checked ? true : false
+                                    if (Array.isArray($$a)) {
+                                      var $$v = "true",
+                                        $$i = _vm._i($$a, $$v)
+                                      if ($$el.checked) {
+                                        $$i < 0 &&
+                                          _vm.$set(
+                                            category.answers,
+                                            index,
+                                            $$a.concat([$$v])
+                                          )
+                                      } else {
+                                        $$i > -1 &&
+                                          _vm.$set(
+                                            category.answers,
+                                            index,
+                                            $$a
+                                              .slice(0, $$i)
+                                              .concat($$a.slice($$i + 1))
+                                          )
+                                      }
+                                    } else {
+                                      _vm.$set(category.answers, index, $$c)
+                                    }
+                                  }
+                                }
+                              })
+                            ])
+                          ])
+                        })
+                      ],
+                      2
+                    )
+                  ]
+                )
+              })
+            ],
+            2
+          )
+        ]),
+        _vm._v(" "),
+        _c("div", { staticClass: "row" }, [
+          _c("div", { staticClass: "col-md-12" }, [
+            _c("div", { staticClass: "row-sub-category" }, [
+              _vm._v("III. Verdict")
+            ]),
+            _vm._v(" "),
+            _c(
+              "div",
+              { staticClass: "alert alert-info", attrs: { role: "alert" } },
+              [
+                _vm._v("\n          Donor will be marked as\n          "),
+                _c("div", { staticClass: "form-check form-check-inline" }, [
+                  _c("input", {
+                    staticClass: "form-check-input",
+                    attrs: {
+                      type: "radio",
+                      name: "inlineRadioOptions",
+                      id: "inlineRadio1",
+                      value: "Pass"
+                    }
+                  }),
+                  _vm._v(" "),
+                  _c(
+                    "label",
+                    {
+                      staticClass: "form-check-label",
+                      attrs: { for: "inlineRadio1" }
+                    },
+                    [_vm._v("Pass")]
+                  )
+                ]),
+                _vm._v(" "),
+                _c("div", { staticClass: "form-check form-check-inline" }, [
+                  _c("input", {
+                    staticClass: "form-check-input",
+                    attrs: {
+                      type: "radio",
+                      name: "inlineRadioOptions",
+                      id: "inlineRadio2",
+                      value: "Fail"
+                    }
+                  }),
+                  _vm._v(" "),
+                  _c(
+                    "label",
+                    {
+                      staticClass: "form-check-label",
+                      attrs: { for: "inlineRadio2" }
+                    },
+                    [_vm._v("Fail")]
+                  )
+                ])
+              ]
+            ),
+            _vm._v(" "),
+            _c("div", { staticClass: "form-group" }, [
+              _c("label", { attrs: { for: "remarks" } }, [_vm._v("Remarks:")]),
+              _vm._v(" "),
+              _c("textarea", {
+                staticClass: "form-control",
+                attrs: { rows: "5", id: "remarks" }
+              })
+            ])
+          ])
+        ])
+      ])
+    ],
+    2
+  )
+}
+var staticRenderFns = []
+render._withStripped = true
+
+
+
+/***/ }),
+
 /***/ "./node_modules/vue-loader/lib/loaders/templateLoader.js?!./node_modules/vue-loader/lib/index.js?!./resources/js/components/Reusables/Donors/DonorProgress.vue?vue&type=template&id=211a8ae3&":
 /*!*********************************************************************************************************************************************************************************************************************************!*\
   !*** ./node_modules/vue-loader/lib/loaders/templateLoader.js??vue-loader-options!./node_modules/vue-loader/lib??vue-loader-options!./resources/js/components/Reusables/Donors/DonorProgress.vue?vue&type=template&id=211a8ae3& ***!
@@ -87416,65 +87421,112 @@ var render = function() {
         _vm._v(_vm._s(_vm.donor.first_name) + " " + _vm._s(_vm.donor.last_name))
       ]),
       _vm._v(" "),
-      _c("div", { staticClass: "modal-body" }, [
-        _c("div", { staticClass: "row-title" }, [_vm._v("Basic Information")]),
-        _vm._v(" "),
-        _c("div", { staticClass: "row" }, [
-          _c("div", { staticClass: "col-md-3" }),
+      _c(
+        "div",
+        { staticClass: "modal-body" },
+        [
+          _c("div", { staticClass: "row-title" }, [
+            _vm._v("Basic Information")
+          ]),
           _vm._v(" "),
-          _c("div", { staticClass: "col-md-9" }, [
-            _c("table", { staticClass: "table table-sm" }, [
-              _c("thead"),
-              _vm._v(" "),
-              _c("tbody", [
-                _c("tr", [
-                  _c("th", [_vm._v("Full Name:")]),
-                  _vm._v(" "),
-                  _c("td", [_vm._v(_vm._s(_vm.donor.full_name))])
-                ]),
+          _c("div", { staticClass: "row" }, [
+            _c("div", { staticClass: "col-md-3" }),
+            _vm._v(" "),
+            _c("div", { staticClass: "col-md-9" }, [
+              _c("table", { staticClass: "table table-sm" }, [
+                _c("thead"),
                 _vm._v(" "),
-                _c("tr", [
-                  _c("th", [_vm._v("Email:")]),
+                _c("tbody", [
+                  _c("tr", [
+                    _c("th", [_vm._v("Full Name:")]),
+                    _vm._v(" "),
+                    _c("td", [_vm._v(_vm._s(_vm.donor.full_name))])
+                  ]),
                   _vm._v(" "),
-                  _c("td", [_vm._v(_vm._s(_vm.donor.email))])
-                ]),
-                _vm._v(" "),
-                _c("tr", [
-                  _c("th", [_vm._v("Account Created:")]),
+                  _c("tr", [
+                    _c("th", [_vm._v("Email:")]),
+                    _vm._v(" "),
+                    _c("td", [_vm._v(_vm._s(_vm.donor.email))])
+                  ]),
                   _vm._v(" "),
-                  _c("td", [_vm._v(_vm._s(_vm.donor.created_at))])
-                ]),
-                _vm._v(" "),
-                _c("tr", [
-                  _c("th", [_vm._v("Account Created:")]),
+                  _c("tr", [
+                    _c("th", [_vm._v("Account Created:")]),
+                    _vm._v(" "),
+                    _c("td", [_vm._v(_vm._s(_vm.donor.created_at))])
+                  ]),
                   _vm._v(" "),
-                  _c("td", [_vm._v(_vm._s(_vm.donor.created_at))])
+                  _c("tr", [
+                    _c("th", [_vm._v("Account Created:")]),
+                    _vm._v(" "),
+                    _c("td", [_vm._v(_vm._s(_vm.donor.created_at))])
+                  ])
                 ])
               ])
             ])
-          ])
-        ]),
-        _vm._v(" "),
-        _c("div", { staticClass: "row-title" }, [_vm._v("Donation Progress ")]),
-        _vm._v(" "),
-        _c("div", { staticClass: "row" }, [
-          _c("div", { staticClass: "col-md-4" }, [
-            _vm._v("\n            Progress Bar\n        ")
           ]),
           _vm._v(" "),
-          _c("div", { staticClass: "col-md-6" }, [
-            _c("ul", { staticClass: "list-group" }, [
-              _c("li", { staticClass: "list-group-item disabled" }, [
-                _vm._v("Donor History")
-              ]),
-              _vm._v(" "),
-              _c("li", { staticClass: "list-group-item" }, [
-                _vm._v("Blood Unit")
+          _c("div", { staticClass: "row-title" }, [
+            _vm._v(" " + _vm._s(_vm.mbd.name) + " ")
+          ]),
+          _vm._v(" "),
+          _c("div", { staticClass: "row-sub-category" }, [
+            _vm._v(" Donation Progress ")
+          ]),
+          _vm._v(" "),
+          _c("div", { staticClass: "row" }, [
+            _c("div", { staticClass: "col-md-4" }, [
+              _vm._v("\n            Progress Bar\n        ")
+            ]),
+            _vm._v(" "),
+            _c("div", { staticClass: "col-md-8" }, [
+              _c("table", { staticClass: "table table-sm table-striped" }, [
+                _c("thead", [
+                  _c("tr", [
+                    _c("th", [_vm._v(" Requirement ")]),
+                    _vm._v(" "),
+                    _c("th", [_vm._v(" Status ")])
+                  ])
+                ]),
+                _vm._v(" "),
+                _c("tbody", [
+                  _c("tr", [
+                    _c("td", [
+                      _c(
+                        "a",
+                        {
+                          attrs: { href: "#" },
+                          on: {
+                            click: function($event) {
+                              $event.preventDefault()
+                              return _vm.openDonorHistory($event)
+                            }
+                          }
+                        },
+                        [_vm._v(" Donor History ")]
+                      )
+                    ]),
+                    _vm._v(" "),
+                    _c("th", [
+                      _c("i", { staticClass: "fas fa-check-square green " })
+                    ])
+                  ]),
+                  _vm._v(" "),
+                  _c("tr", [
+                    _c("td", [_vm._v(" Blood Unit ")]),
+                    _vm._v(" "),
+                    _c("th", [
+                      _c("i", { staticClass: "fas fa-check-square green" })
+                    ])
+                  ])
+                ])
               ])
             ])
-          ])
-        ])
-      ])
+          ]),
+          _vm._v(" "),
+          _c("donor-history", { attrs: { donor: _vm.donor } })
+        ],
+        1
+      )
     ],
     2
   )
@@ -87524,8 +87576,8 @@ var render = function() {
         _vm._v(" "),
         _c(
           "tbody",
-          _vm._l(_vm.donors, function(donor) {
-            return _c("tr", { key: donor.id }, [
+          _vm._l(_vm.donors, function(donor, index) {
+            return _c("tr", { key: index }, [
               _c("td", [
                 _c(
                   "a",
@@ -87595,7 +87647,9 @@ var render = function() {
         : _vm._e(),
       _vm._v(" "),
       _vm.donor_progress != null
-        ? _c("donor-progress", { attrs: { donor: _vm.donor_progress } })
+        ? _c("donor-progress", {
+            attrs: { donor: _vm.donor_progress, mbd: _vm.mbd }
+          })
         : _vm._e()
     ],
     1
@@ -87729,7 +87783,7 @@ var render = function() {
                     [
                       _c("donors-table", {
                         attrs: {
-                          shouldSelect: false,
+                          shouldSelect: true,
                           donors: _vm.searchResults
                         },
                         on: { donor_change: _vm.onDonorChange }
@@ -111190,6 +111244,75 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony reexport (safe) */ __webpack_require__.d(__webpack_exports__, "render", function() { return _node_modules_vue_loader_lib_loaders_templateLoader_js_vue_loader_options_node_modules_vue_loader_lib_index_js_vue_loader_options_DonorModal_vue_vue_type_template_id_37603579___WEBPACK_IMPORTED_MODULE_0__["render"]; });
 
 /* harmony reexport (safe) */ __webpack_require__.d(__webpack_exports__, "staticRenderFns", function() { return _node_modules_vue_loader_lib_loaders_templateLoader_js_vue_loader_options_node_modules_vue_loader_lib_index_js_vue_loader_options_DonorModal_vue_vue_type_template_id_37603579___WEBPACK_IMPORTED_MODULE_0__["staticRenderFns"]; });
+
+
+
+/***/ }),
+
+/***/ "./resources/js/components/Reusables/Donors/DonorHistory.vue":
+/*!*******************************************************************!*\
+  !*** ./resources/js/components/Reusables/Donors/DonorHistory.vue ***!
+  \*******************************************************************/
+/*! exports provided: default */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony import */ var _DonorHistory_vue_vue_type_template_id_8c77a664___WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ./DonorHistory.vue?vue&type=template&id=8c77a664& */ "./resources/js/components/Reusables/Donors/DonorHistory.vue?vue&type=template&id=8c77a664&");
+/* harmony import */ var _DonorHistory_vue_vue_type_script_lang_js___WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ./DonorHistory.vue?vue&type=script&lang=js& */ "./resources/js/components/Reusables/Donors/DonorHistory.vue?vue&type=script&lang=js&");
+/* empty/unused harmony star reexport *//* harmony import */ var _node_modules_vue_loader_lib_runtime_componentNormalizer_js__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ../../../../../node_modules/vue-loader/lib/runtime/componentNormalizer.js */ "./node_modules/vue-loader/lib/runtime/componentNormalizer.js");
+
+
+
+
+
+/* normalize component */
+
+var component = Object(_node_modules_vue_loader_lib_runtime_componentNormalizer_js__WEBPACK_IMPORTED_MODULE_2__["default"])(
+  _DonorHistory_vue_vue_type_script_lang_js___WEBPACK_IMPORTED_MODULE_1__["default"],
+  _DonorHistory_vue_vue_type_template_id_8c77a664___WEBPACK_IMPORTED_MODULE_0__["render"],
+  _DonorHistory_vue_vue_type_template_id_8c77a664___WEBPACK_IMPORTED_MODULE_0__["staticRenderFns"],
+  false,
+  null,
+  null,
+  null
+  
+)
+
+/* hot reload */
+if (false) { var api; }
+component.options.__file = "resources/js/components/Reusables/Donors/DonorHistory.vue"
+/* harmony default export */ __webpack_exports__["default"] = (component.exports);
+
+/***/ }),
+
+/***/ "./resources/js/components/Reusables/Donors/DonorHistory.vue?vue&type=script&lang=js&":
+/*!********************************************************************************************!*\
+  !*** ./resources/js/components/Reusables/Donors/DonorHistory.vue?vue&type=script&lang=js& ***!
+  \********************************************************************************************/
+/*! exports provided: default */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony import */ var _node_modules_babel_loader_lib_index_js_ref_4_0_node_modules_vue_loader_lib_index_js_vue_loader_options_DonorHistory_vue_vue_type_script_lang_js___WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! -!../../../../../node_modules/babel-loader/lib??ref--4-0!../../../../../node_modules/vue-loader/lib??vue-loader-options!./DonorHistory.vue?vue&type=script&lang=js& */ "./node_modules/babel-loader/lib/index.js?!./node_modules/vue-loader/lib/index.js?!./resources/js/components/Reusables/Donors/DonorHistory.vue?vue&type=script&lang=js&");
+/* empty/unused harmony star reexport */ /* harmony default export */ __webpack_exports__["default"] = (_node_modules_babel_loader_lib_index_js_ref_4_0_node_modules_vue_loader_lib_index_js_vue_loader_options_DonorHistory_vue_vue_type_script_lang_js___WEBPACK_IMPORTED_MODULE_0__["default"]); 
+
+/***/ }),
+
+/***/ "./resources/js/components/Reusables/Donors/DonorHistory.vue?vue&type=template&id=8c77a664&":
+/*!**************************************************************************************************!*\
+  !*** ./resources/js/components/Reusables/Donors/DonorHistory.vue?vue&type=template&id=8c77a664& ***!
+  \**************************************************************************************************/
+/*! exports provided: render, staticRenderFns */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony import */ var _node_modules_vue_loader_lib_loaders_templateLoader_js_vue_loader_options_node_modules_vue_loader_lib_index_js_vue_loader_options_DonorHistory_vue_vue_type_template_id_8c77a664___WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! -!../../../../../node_modules/vue-loader/lib/loaders/templateLoader.js??vue-loader-options!../../../../../node_modules/vue-loader/lib??vue-loader-options!./DonorHistory.vue?vue&type=template&id=8c77a664& */ "./node_modules/vue-loader/lib/loaders/templateLoader.js?!./node_modules/vue-loader/lib/index.js?!./resources/js/components/Reusables/Donors/DonorHistory.vue?vue&type=template&id=8c77a664&");
+/* harmony reexport (safe) */ __webpack_require__.d(__webpack_exports__, "render", function() { return _node_modules_vue_loader_lib_loaders_templateLoader_js_vue_loader_options_node_modules_vue_loader_lib_index_js_vue_loader_options_DonorHistory_vue_vue_type_template_id_8c77a664___WEBPACK_IMPORTED_MODULE_0__["render"]; });
+
+/* harmony reexport (safe) */ __webpack_require__.d(__webpack_exports__, "staticRenderFns", function() { return _node_modules_vue_loader_lib_loaders_templateLoader_js_vue_loader_options_node_modules_vue_loader_lib_index_js_vue_loader_options_DonorHistory_vue_vue_type_template_id_8c77a664___WEBPACK_IMPORTED_MODULE_0__["staticRenderFns"]; });
 
 
 
