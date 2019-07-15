@@ -42,7 +42,7 @@ export default {
     return {
         modal_donor: null,
         selected_donor:{},
-        donor_progress: null,
+        donor_progress: null, 
     };
   },
   props: {

@@ -1,5 +1,5 @@
 <template>
-  <b-modal id="donor-history" size="lg" scrollable>
+  <b-modal id="donor-history" size="lg" scrollable hide-footer>
     <template slot="modal-title">{{donor.first_name}} {{donor.last_name}}</template>
     <div class="modal-body">
       <div class="row">
@@ -17,7 +17,7 @@
                 <th></th>
               </tr>
               <tr v-for="(question, index) in category.questions" :key="index">
-                <td>{{question}}</td>
+                <td>{{question}} --- {{category.answers[index]}}</td>
                 <td>
                   <input
                     class="form-check-input"
@@ -41,7 +41,7 @@
               <input
                 class="form-check-input"
                 type="radio"
-                name="inlineRadioOptions"
+                v-model="donorHistoryForms.verdict"
                 id="inlineRadio1"
                 value="Pass"
               />
@@ -51,7 +51,7 @@
               <input
                 class="form-check-input"
                 type="radio"
-                name="inlineRadioOptions"
+                v-model="donorHistoryForms.verdict"
                 id="inlineRadio2"
                 value="Fail"
               />
@@ -60,11 +60,13 @@
           </div>
           <div class="form-group">
             <label for="remarks">Remarks:</label>
-            <textarea class="form-control" rows="5" id="remarks"></textarea>
+            <textarea class="form-control" v-model="donorHistoryForms.remarks" rows="5" id="remarks"></textarea>
           </div>
         </div>
       </div>
+      <button type = "button" @click="populateDonorHistoryAnswers" class = "btn btn-success float-right"> Save </button>
     </div>
+
   </b-modal>
 </template>
 
@@ -109,7 +111,7 @@ export default {
               "Have you been imprisoned?",
               "Have any of your relatives had Creutzfeldt-Jacob (Mad Cow) disease?"
             ],
-            answers: [false, false, false, false, false, false, false]
+            answers: [false, false, false, false, false, false, false, false, false]
           },
           {
             title: "Have you ever",
@@ -140,17 +142,71 @@ export default {
               false
             ]
           }
-        ]
-      }
+        ],
+        verdict: '',
+        remarks: ''
+      },
+      donorHistoryAnswers:[]
     };
   },
   props: {
+    donation: Object,
     donor: Object
   },
   methods: {
-    close() {
-      this.$emit("close");
+    populateDonorHistoryAnswers(){
+      this.donorHistoryAnswers = [];
+      this.donorHistoryForms.category.forEach((val, index)=>{
+        val.answers.forEach((val,index)=>{
+          this.donorHistoryAnswers.push(val);
+        })
+      });
+      this.submitDonorHistory();  
+    },
+    submitDonorHistory(){
+   
+      console.log(this.donorHistoryAnswers);
+      axios.post("/api/donation_donor_history", {
+        donation_id: this.donation.id,
+        answer_1: this.donorHistoryAnswers[0],
+        answer_2: this.donorHistoryAnswers[1],
+        answer_3: this.donorHistoryAnswers[2],
+        answer_4: this.donorHistoryAnswers[3],
+        answer_5: this.donorHistoryAnswers[4],
+        answer_6: this.donorHistoryAnswers[5],
+        answer_7: this.donorHistoryAnswers[6],
+        answer_8: this.donorHistoryAnswers[7],
+        answer_9: this.donorHistoryAnswers[8],
+        answer_10: this.donorHistoryAnswers[9],
+        answer_11: this.donorHistoryAnswers[10],
+        answer_12: this.donorHistoryAnswers[11],
+        answer_13: this.donorHistoryAnswers[12],
+        answer_14: this.donorHistoryAnswers[13],
+        answer_15: this.donorHistoryAnswers[14],
+        answer_16: this.donorHistoryAnswers[15],
+        answer_17: this.donorHistoryAnswers[16],
+        answer_18: this.donorHistoryAnswers[17],
+        answer_19: this.donorHistoryAnswers[18],
+        answer_20: this.donorHistoryAnswers[19],
+        answer_21: this.donorHistoryAnswers[20],
+        answer_22: this.donorHistoryAnswers[21],
+        answer_23: this.donorHistoryAnswers[22],
+        answer_24: this.donorHistoryAnswers[23],
+        answer_25: this.donorHistoryAnswers[24],
+        answer_26: this.donorHistoryAnswers[25],
+        verdict: this.donorHistoryForms.verdict,
+        remarks: this.donorHistoryForms.remarks
+      }).then(()=>{
+        this.$Progress.start();
+        this.$bvModal.hide('donor-history');
+          toast.fire({
+            type: "success",
+            title: "Added Donation History to Donation ID " + this.donation.id 
+          });
+          this.$Progress.finish();
+      })
     }
+
   },
 
   mounted() {}

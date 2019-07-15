@@ -3,7 +3,7 @@
 namespace App\Http\Resources;
 
 use Illuminate\Http\Resources\Json\JsonResource;
-use App\Http\Resources\MBDDonation as MBDDonationResource;
+use App\Http\Resources\Donation as DonationResource;
 
 class User extends JsonResource
 {
@@ -24,7 +24,8 @@ class User extends JsonResource
             'full_name' => $this->last_name . ", " . $this->first_name,
 
             'personal_details' => $this->donor_personal_details,
-            'mbd_donations' => $this->mbd_donations,
+            // 'donations' => DonationResource::collection($this->donations)
+            'donations' => $this->donations
           ];    
     }
 }

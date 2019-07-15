@@ -71,14 +71,24 @@ export default {
 
   methods: {
     registerDonor(){
-      axios.post("/api/mbd_donation", {
+      axios.post("/api/donation", {
         donor_id: this.donor.id,
         status: "Registered",
+      }).then((response) => {
+       axios.post("/api/donation_list", {
+        donation_id: response.data.id,
         mbd_id: this.mbd.id
-      }).then(()=>{          Fire.$emit("AfterDonationAdded");
-}).then(()=>{
+      }) 
+      })
+      .then(()=>{
+        this.$Progress.start();
         this.$bvModal.hide('add-donation');
-      });
+          toast.fire({
+            type: "success",
+            title: "Added Donation for MBD " + this.mbd.name
+          });
+          this.$Progress.finish();
+      })
     },
     onDonorChange(val) {
       this.donor = val;

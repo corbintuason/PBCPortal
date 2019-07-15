@@ -33,35 +33,38 @@
         </div>
       </div>
 
-      <div class="row-title"> {{mbd.name}} </div>
-        <div class = "row-sub-category"> Donation Progress </div>
+      <div class="row-title">{{mbd.name}}</div>
+      <div class="row-sub-category">Donation Progress</div>
 
-        <div class="row">
-          <div class = "col-md-4">
-              Progress Bar
-          </div>
-          <div class = "col-md-8">
-              <table class = "table table-sm table-striped">
-                <thead>
-                  <tr>
-                    <th> Requirement </th>
-                    <th> Status </th>
-                  </tr>
-                </thead>
-                <tbody>
-                  <tr>
-                    <td> <a href = "#" @click.prevent="openDonorHistory"> Donor History </a></td>
-                    <th> <i class="fas fa-check-square green "></i> </th>
-                  </tr>
-                  <tr>
-                    <td> Blood Unit </td>
-                    <th> <i class="fas fa-check-square green"></i> </th>
-                  </tr>
-                </tbody>
-              </table>
-          </div>
+      <div v-if="donation_progress!=null" class="row">
+        <div class="col-md-12">
+          <table class="table table-sm table-striped">
+            <thead>
+              <tr>
+                <th>Requirement</th>
+                <th>Status</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td>
+                  <a href="#" @click.prevent="openDonorHistory" :donation="donation_progress">Donor History</a>
+                </td>
+                <th>
+                  <i class="fas fa-check-square green"></i>
+                </th>
+              </tr>
+              <tr>
+                <td>Blood Unit</td>
+                <th>
+                  <i class="fas fa-check-square green"></i>
+                </th>
+              </tr>
+            </tbody>
+          </table>
         </div>
-      <donor-history :donor="donor"> </donor-history>
+      </div>
+      <donor-history :donor="donor" :donation="donation_progress"></donor-history>
     </div>
   </b-modal>
 </template>
@@ -71,22 +74,34 @@ import donorHistory from "C:/xampp/htdocs/PBCPortal/resources/js/components/Reus
 
 export default {
   data() {
-    return {};
+    return {
+      donation_progress: null
+    };
   },
   props: {
     donor: Object,
     mbd: Object
   },
-  components:{
+  components: {
     "donor-history": donorHistory
   },
+
   methods: {
-    openDonorHistory(){
-      this.$bvModal.show('donor-history');
+    openDonorHistory() {
+      this.$bvModal.show("donor-history");
+    },
+    checkDonationProgress() {
+      var mbd_id = this.mbd.id;
+      
+      var donation = this.mbd.donation_list.find(donation_list => donation_list.donation.donor_id == this.donor.id);
+      console.log(donation);
+      this.donation_progress = donation;
     }
   },
 
-  mounted() {}
+  mounted() {
+    this.checkDonationProgress();
+  }
 };
 </script>
 

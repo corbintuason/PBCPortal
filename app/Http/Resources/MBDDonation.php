@@ -5,6 +5,8 @@ namespace App\Http\Resources;
 use Illuminate\Http\Resources\Json\JsonResource;
 use App\Http\Resources\User as UserResource;
 use App\Http\Resources\MBD as MBDResource;
+use App\Http\Resources\DonationDonorHistory as DonationDonorHistoryResource;
+
 
 class MBDDonation extends JsonResource
 {
@@ -24,7 +26,8 @@ class MBDDonation extends JsonResource
             'mbd_id' => $this->mbd_id,
 
             'donor' => new UserResource($this->donor),
-            'mbd' => new MBDResource($this->mbd)
+            'donation_donor_history' => new DonationDonorHistoryResource($this->donation_donor_history),
+            'mbd' => $this->mbd
         ];
     }
 }

@@ -5,7 +5,7 @@ namespace App;
 use Illuminate\Database\Eloquent\Model;
 use App\Agency;
 use App\DonationList;
-use App\MBDDonation;
+use App\Donation;
 
 class MBD extends Model
 {
@@ -23,7 +23,7 @@ class MBD extends Model
      public function agency(){
           return $this->belongsTo(Agency::class);
      }
-     public function mbd_donations(){
-          return $this->hasMany(MBDDonation::class, 'mbd_id');
+     public function donation_list(){
+          return $this->hasMany(DonationList::class, 'mbd_id');
      }
 }

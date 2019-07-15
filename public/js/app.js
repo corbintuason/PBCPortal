@@ -13937,8 +13937,8 @@ __webpack_require__.r(__webpack_exports__);
     loadDonors: function loadDonors() {
       var _this = this;
 
-      this.mbd.mbd_donations.forEach(function (val, index) {
-        _this.donors.push(val.donor);
+      this.mbd.donation_list.forEach(function (val, index) {
+        _this.donors.push(val.donation.donor);
       });
     }
   },
@@ -15471,14 +15471,25 @@ __webpack_require__.r(__webpack_exports__);
     registerDonor: function registerDonor() {
       var _this = this;
 
-      axios.post("/api/mbd_donation", {
+      axios.post("/api/donation", {
         donor_id: this.donor.id,
-        status: "Registered",
-        mbd_id: this.mbd.id
+        status: "Registered"
+      }).then(function (response) {
+        axios.post("/api/donation_list", {
+          donation_id: response.data.id,
+          mbd_id: _this.mbd.id
+        });
       }).then(function () {
-        Fire.$emit("AfterDonationAdded");
-      }).then(function () {
+        _this.$Progress.start();
+
         _this.$bvModal.hide('add-donation');
+
+        toast.fire({
+          type: "success",
+          title: "Added Donation for MBD " + _this.mbd.name
+        });
+
+        _this.$Progress.finish();
       });
     },
     onDonorChange: function onDonorChange(val) {
@@ -15925,6 +15936,8 @@ __webpack_require__.r(__webpack_exports__);
 //
 //
 //
+//
+//
 /* harmony default export */ __webpack_exports__["default"] = ({
   data: function data() {
     return {
@@ -15944,21 +15957,80 @@ __webpack_require__.r(__webpack_exports__);
         }, {
           title: "In the past 12 months, have you",
           questions: ["Had a blood transfusion", "Had surgical operation? Dental Operation?", "Had a tattoo, ear, or body piercing, accidental contact with blood, needle-stick injury and acupuncture", "Had sexual contact with high-risk individuals?", "Had sexual contact with a person who has worked abroad?", "Engaged in casual sex?", "Lived with a person who has hepatitis?", "Have you been imprisoned?", "Have any of your relatives had Creutzfeldt-Jacob (Mad Cow) disease?"],
-          answers: [false, false, false, false, false, false, false]
+          answers: [false, false, false, false, false, false, false, false, false]
         }, {
           title: "Have you ever",
           questions: ["Lived outside your place of residence?", "Lived outside the Philippines?", "Used needles to take drugs, steroids, or anything not prescribed by your doctor?", "Used clotting factor concentrates?", "Had a positive test for HIV, Hepatitis, Syphilis, or Malaria?", "Been told to have or treated for genital wart, syphilis, gonorrhea, or other Sexually Transmittable Infections?", "Had any type of cancer? For example, leukemia?", "Had any problems with your heart or lungs?", "Had a bleeding condition or a blood disease?", "Are you giving blood because you want to be tested for HIV or Hepatitis Virus?", "Are you aware that if you have HIV or Hepatitis, you can give it to someone else though you may feel well and have a negative HIV/Hepatitis test?"],
           answers: [false, false, false, false, false, false, false, false, false, false, false]
-        }]
-      }
+        }],
+        verdict: '',
+        remarks: ''
+      },
+      donorHistoryAnswers: []
     };
   },
   props: {
+    donation: Object,
     donor: Object
   },
   methods: {
-    close: function close() {
-      this.$emit("close");
+    populateDonorHistoryAnswers: function populateDonorHistoryAnswers() {
+      var _this = this;
+
+      this.donorHistoryAnswers = [];
+      this.donorHistoryForms.category.forEach(function (val, index) {
+        val.answers.forEach(function (val, index) {
+          _this.donorHistoryAnswers.push(val);
+        });
+      });
+      this.submitDonorHistory();
+    },
+    submitDonorHistory: function submitDonorHistory() {
+      var _this2 = this;
+
+      console.log(this.donorHistoryAnswers);
+      axios.post("/api/donation_donor_history", {
+        donation_id: this.donation.id,
+        answer_1: this.donorHistoryAnswers[0],
+        answer_2: this.donorHistoryAnswers[1],
+        answer_3: this.donorHistoryAnswers[2],
+        answer_4: this.donorHistoryAnswers[3],
+        answer_5: this.donorHistoryAnswers[4],
+        answer_6: this.donorHistoryAnswers[5],
+        answer_7: this.donorHistoryAnswers[6],
+        answer_8: this.donorHistoryAnswers[7],
+        answer_9: this.donorHistoryAnswers[8],
+        answer_10: this.donorHistoryAnswers[9],
+        answer_11: this.donorHistoryAnswers[10],
+        answer_12: this.donorHistoryAnswers[11],
+        answer_13: this.donorHistoryAnswers[12],
+        answer_14: this.donorHistoryAnswers[13],
+        answer_15: this.donorHistoryAnswers[14],
+        answer_16: this.donorHistoryAnswers[15],
+        answer_17: this.donorHistoryAnswers[16],
+        answer_18: this.donorHistoryAnswers[17],
+        answer_19: this.donorHistoryAnswers[18],
+        answer_20: this.donorHistoryAnswers[19],
+        answer_21: this.donorHistoryAnswers[20],
+        answer_22: this.donorHistoryAnswers[21],
+        answer_23: this.donorHistoryAnswers[22],
+        answer_24: this.donorHistoryAnswers[23],
+        answer_25: this.donorHistoryAnswers[24],
+        answer_26: this.donorHistoryAnswers[25],
+        verdict: this.donorHistoryForms.verdict,
+        remarks: this.donorHistoryForms.remarks
+      }).then(function () {
+        _this2.$Progress.start();
+
+        _this2.$bvModal.hide('donor-history');
+
+        toast.fire({
+          type: "success",
+          title: "Added Donation History to Donation ID " + _this2.donation.id
+        });
+
+        _this2.$Progress.finish();
+      });
     }
   },
   mounted: function mounted() {}
@@ -16044,10 +16116,15 @@ __webpack_require__.r(__webpack_exports__);
 //
 //
 //
+//
+//
+//
 
 /* harmony default export */ __webpack_exports__["default"] = ({
   data: function data() {
-    return {};
+    return {
+      donation_progress: null
+    };
   },
   props: {
     donor: Object,
@@ -16058,10 +16135,22 @@ __webpack_require__.r(__webpack_exports__);
   },
   methods: {
     openDonorHistory: function openDonorHistory() {
-      this.$bvModal.show('donor-history');
+      this.$bvModal.show("donor-history");
+    },
+    checkDonationProgress: function checkDonationProgress() {
+      var _this = this;
+
+      var mbd_id = this.mbd.id;
+      var donation = this.mbd.donation_list.find(function (donation_list) {
+        return donation_list.donation.donor_id == _this.donor.id;
+      });
+      console.log(donation);
+      this.donation_progress = donation;
     }
   },
-  mounted: function mounted() {}
+  mounted: function mounted() {
+    this.checkDonationProgress();
+  }
 });
 
 /***/ }),
@@ -87132,7 +87221,7 @@ var render = function() {
         _vm._v(" "),
         _c("div", { staticClass: "row-title" }, [_vm._v("Donation History")]),
         _vm._v(" "),
-        _vm.donor.mbd_donations.length
+        _vm.donor.donations.length
           ? _c("div", [
               _c("div", { staticClass: "row donor-short-profile" }, [
                 _c("div", { staticClass: "col-md-4" }, [
@@ -87217,7 +87306,14 @@ var render = function() {
   var _c = _vm._self._c || _h
   return _c(
     "b-modal",
-    { attrs: { id: "donor-history", size: "lg", scrollable: "" } },
+    {
+      attrs: {
+        id: "donor-history",
+        size: "lg",
+        scrollable: "",
+        "hide-footer": ""
+      }
+    },
     [
       _c("template", { slot: "modal-title" }, [
         _vm._v(_vm._s(_vm.donor.first_name) + " " + _vm._s(_vm.donor.last_name))
@@ -87254,7 +87350,13 @@ var render = function() {
                         _vm._v(" "),
                         _vm._l(category.questions, function(question, index) {
                           return _c("tr", { key: index }, [
-                            _c("td", [_vm._v(_vm._s(question))]),
+                            _c("td", [
+                              _vm._v(
+                                _vm._s(question) +
+                                  " --- " +
+                                  _vm._s(category.answers[index])
+                              )
+                            ]),
                             _vm._v(" "),
                             _c("td", [
                               _c("input", {
@@ -87334,12 +87436,27 @@ var render = function() {
                 _vm._v("\n          Donor will be marked as\n          "),
                 _c("div", { staticClass: "form-check form-check-inline" }, [
                   _c("input", {
+                    directives: [
+                      {
+                        name: "model",
+                        rawName: "v-model",
+                        value: _vm.donorHistoryForms.verdict,
+                        expression: "donorHistoryForms.verdict"
+                      }
+                    ],
                     staticClass: "form-check-input",
-                    attrs: {
-                      type: "radio",
-                      name: "inlineRadioOptions",
-                      id: "inlineRadio1",
-                      value: "Pass"
+                    attrs: { type: "radio", id: "inlineRadio1", value: "Pass" },
+                    domProps: {
+                      checked: _vm._q(_vm.donorHistoryForms.verdict, "Pass")
+                    },
+                    on: {
+                      change: function($event) {
+                        return _vm.$set(
+                          _vm.donorHistoryForms,
+                          "verdict",
+                          "Pass"
+                        )
+                      }
                     }
                   }),
                   _vm._v(" "),
@@ -87355,12 +87472,27 @@ var render = function() {
                 _vm._v(" "),
                 _c("div", { staticClass: "form-check form-check-inline" }, [
                   _c("input", {
+                    directives: [
+                      {
+                        name: "model",
+                        rawName: "v-model",
+                        value: _vm.donorHistoryForms.verdict,
+                        expression: "donorHistoryForms.verdict"
+                      }
+                    ],
                     staticClass: "form-check-input",
-                    attrs: {
-                      type: "radio",
-                      name: "inlineRadioOptions",
-                      id: "inlineRadio2",
-                      value: "Fail"
+                    attrs: { type: "radio", id: "inlineRadio2", value: "Fail" },
+                    domProps: {
+                      checked: _vm._q(_vm.donorHistoryForms.verdict, "Fail")
+                    },
+                    on: {
+                      change: function($event) {
+                        return _vm.$set(
+                          _vm.donorHistoryForms,
+                          "verdict",
+                          "Fail"
+                        )
+                      }
                     }
                   }),
                   _vm._v(" "),
@@ -87380,12 +87512,43 @@ var render = function() {
               _c("label", { attrs: { for: "remarks" } }, [_vm._v("Remarks:")]),
               _vm._v(" "),
               _c("textarea", {
+                directives: [
+                  {
+                    name: "model",
+                    rawName: "v-model",
+                    value: _vm.donorHistoryForms.remarks,
+                    expression: "donorHistoryForms.remarks"
+                  }
+                ],
                 staticClass: "form-control",
-                attrs: { rows: "5", id: "remarks" }
+                attrs: { rows: "5", id: "remarks" },
+                domProps: { value: _vm.donorHistoryForms.remarks },
+                on: {
+                  input: function($event) {
+                    if ($event.target.composing) {
+                      return
+                    }
+                    _vm.$set(
+                      _vm.donorHistoryForms,
+                      "remarks",
+                      $event.target.value
+                    )
+                  }
+                }
               })
             ])
           ])
-        ])
+        ]),
+        _vm._v(" "),
+        _c(
+          "button",
+          {
+            staticClass: "btn btn-success float-right",
+            attrs: { type: "button" },
+            on: { click: _vm.populateDonorHistoryAnswers }
+          },
+          [_vm._v(" Save ")]
+        )
       ])
     ],
     2
@@ -87466,64 +87629,67 @@ var render = function() {
           ]),
           _vm._v(" "),
           _c("div", { staticClass: "row-title" }, [
-            _vm._v(" " + _vm._s(_vm.mbd.name) + " ")
+            _vm._v(_vm._s(_vm.mbd.name))
           ]),
           _vm._v(" "),
           _c("div", { staticClass: "row-sub-category" }, [
-            _vm._v(" Donation Progress ")
+            _vm._v("Donation Progress")
           ]),
           _vm._v(" "),
-          _c("div", { staticClass: "row" }, [
-            _c("div", { staticClass: "col-md-4" }, [
-              _vm._v("\n            Progress Bar\n        ")
-            ]),
-            _vm._v(" "),
-            _c("div", { staticClass: "col-md-8" }, [
-              _c("table", { staticClass: "table table-sm table-striped" }, [
-                _c("thead", [
-                  _c("tr", [
-                    _c("th", [_vm._v(" Requirement ")]),
-                    _vm._v(" "),
-                    _c("th", [_vm._v(" Status ")])
-                  ])
-                ]),
-                _vm._v(" "),
-                _c("tbody", [
-                  _c("tr", [
-                    _c("td", [
-                      _c(
-                        "a",
-                        {
-                          attrs: { href: "#" },
-                          on: {
-                            click: function($event) {
-                              $event.preventDefault()
-                              return _vm.openDonorHistory($event)
-                            }
-                          }
-                        },
-                        [_vm._v(" Donor History ")]
-                      )
+          _vm.donation_progress != null
+            ? _c("div", { staticClass: "row" }, [
+                _c("div", { staticClass: "col-md-12" }, [
+                  _c("table", { staticClass: "table table-sm table-striped" }, [
+                    _c("thead", [
+                      _c("tr", [
+                        _c("th", [_vm._v("Requirement")]),
+                        _vm._v(" "),
+                        _c("th", [_vm._v("Status")])
+                      ])
                     ]),
                     _vm._v(" "),
-                    _c("th", [
-                      _c("i", { staticClass: "fas fa-check-square green " })
-                    ])
-                  ]),
-                  _vm._v(" "),
-                  _c("tr", [
-                    _c("td", [_vm._v(" Blood Unit ")]),
-                    _vm._v(" "),
-                    _c("th", [
-                      _c("i", { staticClass: "fas fa-check-square green" })
+                    _c("tbody", [
+                      _c("tr", [
+                        _c("td", [
+                          _c(
+                            "a",
+                            {
+                              attrs: {
+                                href: "#",
+                                donation: _vm.donation_progress
+                              },
+                              on: {
+                                click: function($event) {
+                                  $event.preventDefault()
+                                  return _vm.openDonorHistory($event)
+                                }
+                              }
+                            },
+                            [_vm._v("Donor History")]
+                          )
+                        ]),
+                        _vm._v(" "),
+                        _c("th", [
+                          _c("i", { staticClass: "fas fa-check-square green" })
+                        ])
+                      ]),
+                      _vm._v(" "),
+                      _c("tr", [
+                        _c("td", [_vm._v("Blood Unit")]),
+                        _vm._v(" "),
+                        _c("th", [
+                          _c("i", { staticClass: "fas fa-check-square green" })
+                        ])
+                      ])
                     ])
                   ])
                 ])
               ])
-            ])
-          ]),
+            : _vm._e(),
           _vm._v(" "),
-          _c("donor-history", { attrs: { donor: _vm.donor } })
+          _c("donor-history", {
+            attrs: { donor: _vm.donor, donation: _vm.donation_progress }
+          })
         ],
         1
       )

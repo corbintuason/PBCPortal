@@ -69,7 +69,7 @@
       </div>
 
       <div class="row-title">Donation History</div>
-      <div v-if="donor.mbd_donations.length">
+      <div v-if="donor.donations.length">
         <div class="row donor-short-profile">
           <div class="col-md-4">Total Donations: </div>
           <div class="col-md-4">Successful Donations: </div>

@@ -16,7 +16,7 @@ class DonationList extends Model
     public $timestamps = true;
     
     protected $fillable =[
-    'donor_id', 'donation_id', 'mbd_donor_list_id'
+    'donation_id', 'mbd_id'
     ];
 
     public function mbd(){

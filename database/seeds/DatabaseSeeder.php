@@ -23,11 +23,18 @@ class DatabaseSeeder extends Seeder
             factory(App\DonorPersonalDetails::class)->create(['donor_id' => $donor->id]);
         }
 
-        $donations = factory(App\Donation::class, 3)->create();
         $mbds = factory(App\MBD::class, 10)->create();
         foreach($mbds as $mbd){
-            factory(App\DonationList::class)->create(['mbd_id' => $mbd->id]);
+            $mbd_donations = factory(App\Donation::class, 3)->create();
+            foreach($mbd_donations as $mbd_donation){
+                factory(App\DonationList::class)->create([
+                    'mbd_id' => $mbd->id,
+                    'donation_id' => $mbd_donation->id]);
             }
+            
+        }
+
+        $donations = App\Donation::all();
         foreach($donations as $donation){
             factory(App\BloodUnit::class)->create(['donation_id' => $donation->id]);
         }

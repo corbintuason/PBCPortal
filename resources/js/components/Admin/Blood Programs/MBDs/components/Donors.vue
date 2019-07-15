@@ -60,8 +60,8 @@ export default {
       this.$bvModal.show('donor-modal');
     },
     loadDonors(){
-      this.mbd.mbd_donations.forEach((val, index)=>{
-        this.donors.push(val.donor);
+      this.mbd.donation_list.forEach((val, index)=>{
+        this.donors.push(val.donation.donor);
       })
     }
   },

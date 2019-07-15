@@ -32,7 +32,14 @@ class DonationListController extends Controller
      */
     public function store(Request $request)
     {
-        //
+        $this->validate($request,[
+            'donation_id' => 'required',
+            'mbd_id' => 'required',
+         ]);
+         return DonationList::create([
+             'donation_id' => $request['donation_id'],
+             'mbd_id' => $request['mbd_id']
+         ]);
     }
 
     /**

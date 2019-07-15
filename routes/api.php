@@ -25,9 +25,8 @@ Route::apiResources([
     'admin' => 'API\AdminController'
 ]);
 
-
 Route::apiResources([
-    'mbd_donation' => 'API\MBDDonationController'
+    'donation_donor_history' => 'API\DonationDonorHistoryController'
 ]);
 
 
@@ -57,13 +56,15 @@ Route::apiResources([
     'tested_blood_unit' => 'API\TestedBloodUnitController'
 ]);
 
-Route::apiResources([
-    'donation' => 'API\DonationController'
-]);
 
 Route::apiResources([
     'donor_personal_details' => 'API\DonorPersonalDetailsController'
 ]);
+
+Route::apiResources([
+    'donation' => 'API\DonationController'
+]);
+
 
 Route::apiResources([
     'donation_list' => 'API\DonationListController'
