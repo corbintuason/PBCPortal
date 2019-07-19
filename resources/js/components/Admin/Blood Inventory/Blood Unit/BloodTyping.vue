@@ -32,7 +32,6 @@
                         <td>{{index+1}}</td>
                         <td>{{donated_blood_unit.code}}</td>
                         <td>
-                          {{typing_blood_units[index]}}
                           <select class="custom-select" v-model="typing_blood_units[index].ABO">
                             <option disabled value>Please select one</option>
                             <option value="A">A</option>
@@ -95,15 +94,15 @@ export default {
         });
       })
     },
-    loadDonatedUnits() {
+    loadRegisteredUnits() {
       axios
         .get("/api/blood_unit",{
           params: {
-            status: "Donated"
+            status: "Registered"
           }
         })
         .then(response => (this.donated_blood_units = response.data.data))
-        .then(() => {
+        .then((response) => { console.log(response);
           this.populateUnits();
         });
     },
@@ -135,7 +134,7 @@ export default {
             title: "Blood Unit Typed"
           });
           this.$Progress.finish();
-          this.loadDonatedUnits();
+          this.loadRegisteredUnits();
 
     },
     // Updates Blood Unit to Processed
@@ -148,7 +147,7 @@ export default {
   },
 
   created() {
-    this.loadDonatedUnits();
+    this.loadRegisteredUnits();
 
     console.log("loaded");
   }

@@ -14,6 +14,14 @@ class ProcessedBloodUnit extends JsonResource
      */
     public function toArray($request)
     {
-        return parent::toArray($request);
+        return [
+            'whole_blood' => $this->whole_blood,
+            'packed_rbc' => $this->packed_rbc,
+            'platelet_concentrate' => $this->platelet_concentrate,
+            'ffp' => $this->ffp,
+            'cryoprecipitate' => $this->cryoprecipitate,
+            'cryosupernate' => $this->cryosupernate,
+            'blood_unit_id' => $this->blood_unit_id
+        ];
     }
 }

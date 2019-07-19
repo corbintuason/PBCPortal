@@ -52,12 +52,14 @@ window.toast = toast;
 import Navbar from './components/Globals/Navbar.vue';
 Vue.component('navbar', Navbar);
 
+import DonorNavbar from './components/Globals/DonorNavbar.vue'
+Vue.component('donor-navbar', DonorNavbar);
+
 /**  
  * Routes for Vue
 */
 
 let routes = [
-    { path: '/home', name: 'Home', component: require('./components/Donor/Home.vue').default },
     { path: '/dashboard', name: 'Dashboard', component: require('./components/Admin/Dashboard.vue').default },
     { path: '/profile', name: 'Profile', component: require('./components/Admin/Profile.vue').default },
     { path: '/bloodInventory', name: 'Blood Inventory', component: require('./components/Admin/BloodInventory.vue').default },
@@ -89,6 +91,15 @@ let routes = [
     { path: '/bloodPrograms/MBDs', component: require('./components/Admin/Blood Programs/MBDs.vue').default },
     { path: '/bloodPrograms/MBDs/:mbd_id', name:'show-mbd', component: require('./components/Admin/Blood Programs/MBDs/ShowMBD.vue').default },
     { path: '/bloodPrograms/Walkins', component: require('./components/Admin/Blood Programs/Walkins.vue').default },
+  
+  
+  /* DONOR RELATED PATHS ONLY*/
+  { path: '/home', name: 'Home', component: require('./components/Donor/Home.vue').default },
+  { path: '/requestBlood', name: 'Request Blood', component: require('./components/Donor/RequestBlood.vue').default },
+  { path: '/myAgencies', name: 'My Agencies', component: require('./components/Donor/MyAgencies.vue').default },
+
+
+  
   ]
 
 const router = new VueRouter({

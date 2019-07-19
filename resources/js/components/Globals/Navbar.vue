@@ -81,7 +81,6 @@
           aria-expanded="false"
         >Blood Unit</a>
         <div class="dropdown-menu" aria-labelledby="navbarDropdownMenuLink">
-          <router-link class="dropdown-item" to="/bloodInventory/registerUnit">Register Blood Unit</router-link>
           <router-link class="dropdown-item" to="/bloodInventory/bloodTyping">Blood Typing</router-link>
           <router-link class="dropdown-item" to="/bloodInventory/bloodProcessing">Blood Processing</router-link>
           <router-link class="dropdown-item" to="/bloodInventory/bloodTesting">Blood Testing</router-link>

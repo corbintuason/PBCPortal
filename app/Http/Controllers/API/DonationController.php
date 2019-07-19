@@ -21,6 +21,10 @@ class DonationController extends Controller
       
 
         $query = Donation::query();
+        $donor_id = $request->get('donor_id');
+        if($donor_id)
+        $query->where('donor_id', $donor_id);
+
     
         return new DonationCollection($query->get());
     }
@@ -63,15 +67,15 @@ class DonationController extends Controller
      */
     public function update(Request $request, $id)
     {
-        // $donation = Donation::findOrFail($id);
-        // $this->validate($request,[
-        //     'status' => 'required|string|max:191',
-        //  ]);
-        //  $blood_unit->update([
-        //      'status' => $request['status']
-        //  ]);
+        $donation = Donation::findOrFail($id);
+        $this->validate($request,[
+            'status' => 'required|string|max:191',
+         ]);
+         $donation->update([
+             'status' => $request['status']
+         ]);
 
-        //  return response()->json($blood_unit);
+         return new DonationResource($donation);
     }
 
     /**

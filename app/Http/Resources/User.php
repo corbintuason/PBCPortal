@@ -25,7 +25,9 @@ class User extends JsonResource
 
             'personal_details' => $this->donor_personal_details,
             // 'donations' => DonationResource::collection($this->donations)
-            'donations' => $this->donations
-          ];    
+            'donations' => $this->donations,
+
+            'agencies' => $this->agencies
+          ];     
     }
 }

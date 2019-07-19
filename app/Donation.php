@@ -26,8 +26,4 @@ class Donation extends Model
      public function donation_donor_history(){
           return $this->hasOne(DonationDonorHistory::class);
      }
-
-     public function donation_list(){
-          return $this->belongsTo(DonationList::class);
-     }
 }

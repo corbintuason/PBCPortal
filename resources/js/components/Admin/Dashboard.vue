@@ -48,7 +48,7 @@
 
           <!-- Upcoming MBDs-->
           <div class="row">
-            <div class="col-md-8">
+            <div class="col-md-12">
               <div class="card">
                 <div class="card-header">
                   <div class="card-title">Upcoming MBDs</div>
@@ -57,8 +57,20 @@
               </div>
             </div>
           </div>
+          <div class = "row">
+            <div class="col-md-12">
+              <div class="card">
+                <div class="card-header">
+                  <div class="card-title">MBD Requests</div>
+                </div>
+                <div class="card-body">
+                  <mbd-requests> </mbd-requests>
+                </div>
+              </div>
+            </div>
+          </div>
           <div class="row">
-            <div class="col-md-8">
+            <div class="col-md-6">
               <div class="card">
                 <div class="card-header">
                   <div class="card-title">Active Blood Requests</div>
@@ -75,9 +87,11 @@
 
 <script>
 import bloodstocks from "../Reusables/BloodStocks.vue";
+import mbdRequests from "../Reusables/MBDs/MBDRequests.vue";
 export default {
   components: {
-    "blood-stocks": bloodstocks
+    "blood-stocks": bloodstocks,
+    "mbd-requests" : mbdRequests
   },
 
   mounted() {

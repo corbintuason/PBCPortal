@@ -26,7 +26,7 @@
   </table>
 <donor-modal v-if="modal_donor != null" :donor="modal_donor"> </donor-modal>
 
-<donor-progress v-if="donor_progress != null" :donor="donor_progress" :mbd="mbd"> </donor-progress>
+<donor-progress v-if="donor_progress != null && donation_progress !=null" :donor="donor_progress" :mbd="mbd" :donation="donation_progress"> </donor-progress>
 
 
 </div>
@@ -42,7 +42,8 @@ export default {
     return {
         modal_donor: null,
         selected_donor:{},
-        donor_progress: null, 
+        donation_progress: null, 
+        donor_progress: null
     };
   },
   props: {
@@ -65,8 +66,13 @@ export default {
       this.modal_donor = donor    
       this.$bvModal.show('donor-modal');
     },
+      loadDonationProgress() {
+      var donation = this.mbd.donation_list.find(donation_list => donation_list.donation.donor_id === this.donor_progress.id);
+      this.donation_progress = donation;
+    },
     openDonorProgress(donor){
-      this.donor_progress = donor;
+      this.donor_progress = donor;  
+      this.loadDonationProgress();
       this.$bvModal.show('donor-progress');
     },
     mounted(){

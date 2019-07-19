@@ -7,6 +7,7 @@ use Illuminate\Contracts\Auth\MustVerifyEmail;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use App\DonorPersonalDetails;
 use App\Donation;
+use App\Agency;
 class User extends Authenticatable
 {
     use Notifiable;
@@ -44,6 +45,10 @@ class User extends Authenticatable
 
     public function donations(){
         return $this->hasMany(Donation::class, 'donor_id');
+    }
+
+    public function agencies(){
+        return $this->belongsToMany(Agency::class, 'agency_user', 'donor_id');
     }
 
   

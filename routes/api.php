@@ -65,6 +65,10 @@ Route::apiResources([
     'donation' => 'API\DonationController'
 ]);
 
+Route::apiResources([
+    'mbd_schedule' => 'API\MBDScheduleController'
+]);
+
 
 Route::apiResources([
     'donation_list' => 'API\DonationListController'

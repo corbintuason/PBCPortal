@@ -14,7 +14,6 @@
           <div class="col-md-12">
             <!-- Input Name -->
             <div class="container">
-              {{donor}}
               <b-form-group>
                 <b-form-radio
                   style="display:inline"

@@ -50,7 +50,7 @@ scratch. This page gets rid of all links and provides the needed markup only.
             <li class="nav-item has-treeview">
               <a href="#" class="nav-link">
                 <img src = "img/admin.png">
-                <p> I am a donor <i class="right fas fa-angle-left"></i>
+                <p> {{Auth::user()->last_name}}, {{Auth::user()->first_name}} <i class="right fas fa-angle-left"></i>
                 </p> 
               </a>
               <ul class="nav nav-treeview">
@@ -92,72 +92,40 @@ scratch. This page gets rid of all links and provides the needed markup only.
         <ul class="nav nav-pills nav-sidebar flex-column" data-widget="treeview" role="menu" data-accordion="false">
           <!-- Add icons to the links using the .nav-icon class
                with font-awesome or any other icon font library -->
+               <li class="nav-item">
+                <router-link to="/home" class="nav-link">
+                  <i class="fas fa-home"></i>
+                  <p>
+                    Home
+                  </p>
+                </router-link>
+              </li>
           <li class="nav-item">
-            <router-link to="/dashboard" class="nav-link">
-              <i class="nav-icon fas fa-tachometer-alt"></i>
+            <router-link to="/myDonations" class="nav-link">
+              <i class="fas fa-hand-holding-heart"></i>               
               <p>
-                Dashboard
+                My Donations
               </p>
             </router-link>
           </li>
 
           <li class="nav-item">
-            <router-link to="/administrations" class="nav-link">
+            <router-link to="/requestBlood" class="nav-link">
               <i class="nav-icon fas fa-cogs"></i>
               <p>
-                Administrations
+                Request for Blood
               </p>
             </router-link>
           </li>
 
           <li class="nav-item">
-            <router-link to="/bloodInventory" class="nav-link">
-              <i class="nav-icon fas fa-boxes"></i>
+            <router-link to="/myAgencies" class="nav-link">
+              <i class="nav-icon fas fa-cogs"></i>
               <p>
-                Blood Inventory
+                My Agencies
               </p>
             </router-link>
           </li>
-          <li class="nav-item">
-            <router-link to="/bloodRequest" class="nav-link">
-              <i class="nav-icon fas fa-angle-double-right"></i>
-              <p>
-                Blood Request
-              </p>
-            </router-link>
-          </li>
-          <li class="nav-item">
-            <router-link to="/donorsAgencies" class="nav-link">
-              <i class="nav-icon fas fa-users"></i>
-              <p>
-                Donors and Agencies
-              </p>
-            </router-link>
-          </li>
-          <li class="nav-item">
-            <router-link to="/demandPlanning" class="nav-link">
-              <i class="nav-icon fas fa-chart-bar"></i>
-              <p>
-                Blood Demand Planning
-              </p>
-            </router-link>
-          </li>
-          <li class="nav-item">
-            <router-link to="/bloodPrograms" class="nav-link">
-              <i class="nav-icon fas fa-chart-line"></i>
-              <p>
-                Blood Programs
-              </p>
-            </router-link>
-          </li>
-          <li class="nav-item">
-              <router-link to="/reports" class="nav-link">
-                <i class="nav-icon fas fa-chart-line"></i>
-                <p>
-                  Report Generation
-                </p>
-              </router-link>
-            </li>
         </ul>
       </nav>
       <!-- /.sidebar-menu -->

@@ -15,7 +15,7 @@ class BloodUnit extends Model
      public $timestamps = true;
      
      protected $fillable =[
-     'donation_id', 'status'
+     'donation_id', 'status', 'code'
      ];
 
 

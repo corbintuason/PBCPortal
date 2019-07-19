@@ -16,6 +16,12 @@ class DatabaseSeeder extends Seeder
         factory(App\Admin::class, 10)->create();
         factory(App\User::class, 10)->create();
         $agencies = $this->call(AgenciesTableSeeder::class);
+
+        App\User::all()->each(function ($user) use ($agencies) { 
+            $user->agencies()->attach(App\Agency::find([1,2])); 
+        });
+
+
         $admins = App\Admin::all();
         $donors = App\User::all();
 
@@ -23,7 +29,17 @@ class DatabaseSeeder extends Seeder
             factory(App\DonorPersonalDetails::class)->create(['donor_id' => $donor->id]);
         }
 
-        $mbds = factory(App\MBD::class, 10)->create();
+        $mbds = factory(App\MBD::class, 3)->create(['status' => 'Requested']);
+        foreach($mbds as $mbd){
+            factory(App\MBDSchedule::class)->create([
+                'mbd_id' => $mbd->id,
+                'date' => "2019-07-11",
+                'start_time' => "10:00:00",
+                'end_time' => "13:00:00",
+                'venue' => "Connon",
+                'expectedDonors' => 5
+            ]);
+        }
         foreach($mbds as $mbd){
             $mbd_donations = factory(App\Donation::class, 3)->create();
             foreach($mbd_donations as $mbd_donation){

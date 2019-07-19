@@ -86,7 +86,6 @@
                       @click="testBlood"
                       class="btn btn-success float-right"
                     >Update</button>
-                    {{testing_blood_units}}
                   </div>
                 </div>
               </div>
@@ -190,7 +189,6 @@ export default {
             if (this.bloodUnitPass(val)) {
               test_status = "Stock";
               console.log("pass dapat" + val.donation_id);
-              this.storeBloodUnit(val);
             } else {
               test_status = "Tested - Fail";
             }
@@ -218,16 +216,7 @@ export default {
       });
     },
 
-    storeBloodUnit(unit) {
-      axios.post("/api/blood_stock", {
-        donation_id: unit.donation_id,
-        hbSag: unit.hbSag,
-        HCV: unit.HCV,
-        HIV: unit.HIV,
-        malaria: unit.malaria,
-        syphilis: unit.syphilis
-      });
-    },
+  
 
     /* 
     ~ [END] Blood Processing Methods ~

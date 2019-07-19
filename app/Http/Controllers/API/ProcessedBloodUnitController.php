@@ -44,7 +44,7 @@ class ProcessedBloodUnitController extends Controller
         ]);
         if($validator){
             return ProcessedBloodUnit::create([
-                'blood_unit_id' => $request['donation_id'],
+                'blood_unit_id' => $request['blood_unit_id'],
                 'whole_blood' => $request['whole_blood'],
                 'packed_rbc' => $request['packed_rbc'],
                 'platelet_concentrate' => $request['platelet_concentrate'],

@@ -146,12 +146,13 @@ export default {
     },
 
     countWholeBlood(ABO, rh_type) {
-      var $target_blood_type = this.getTargetBloodType(ABO, rh_type);
-      var $whole_blood_count = 0;
-      $target_blood_type.forEach((val, index) => {
-        if (val.processed_blood_unit.whole_blood != null) $whole_blood_count++;
+      var target_blood_type = this.getTargetBloodType(ABO, rh_type);
+      var whole_blood_count = 0;
+      console.log(ABO + rh_type + target_blood_type.processed_blood_unit);
+      target_blood_type.forEach((val, index) => {
+        if (val.processed_blood_unit.whole_blood != null) whole_blood_count++;
       });
-      return $whole_blood_count;
+      return whole_blood_count;
     },
     countPR(ABO, rh_type) {
       var $target_blood_type = this.getTargetBloodType(ABO, rh_type);

@@ -24,6 +24,8 @@ class MBDController extends Controller
         $query = MBD::query();
         if($request->get('id')){
         $query->where('id', $request->get('id'));
+     } if ($request->get('status')){
+         $query->where('status', $request->get('status'));
      }
      return new MBDCollection($query->get());
     }
@@ -66,7 +68,14 @@ class MBDController extends Controller
      */
     public function update(Request $request, $id)
     {
-        //
+        $mbd = MBD::findOrFail($id);
+        $this->validate($request,[
+            'status' => 'string'
+         ]);
+        $mbd->update([
+            'status' => $request['status']
+        ]);
+        return response()->json($mbd);
     }
 
     /**

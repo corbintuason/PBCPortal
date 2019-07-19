@@ -44,15 +44,14 @@ class BloodUnitController extends Controller
     public function store(Request $request)
     {
         $this->validate($request,[
-           'donation_id' => new DonationIDFormat,
-           'donor_id' => 'required|integer|max:191',
-           'quantity' => 'required'
+           'donation_id' => 'required|integer',
+           'code' => 'required|string',
+           'status' => 'required|string'
         ]);
         return BloodUnit::create([
             'donation_id' => $request['donation_id'],
+            'code' => $request['code'],
             'status' => $request['status'],
-            'donor_id' => $request['donor_id'],
-            'quantity' => $request['quantity']
         ]);
     }
 

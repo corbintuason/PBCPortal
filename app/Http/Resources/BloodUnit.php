@@ -18,17 +18,16 @@ class BloodUnit extends JsonResource
      */
     public function toArray($request)
     {
+        
         return[
             'id' => $this->id,
             'donation_id' => $this->donation_id,
             'code' => $this->code,
             'status' => $this->status,
             'typed_blood_unit' => new TypedBloodUnitResource($this->typed_blood_unit),
-            'blood_type' => $this->typed_blood_unit->ABO.$this->typed_blood_unit->rh_type,
+            // 'blood_type' => $this->typed_blood_unit->ABO. $this->typed_blood_unit->rh_type,
             'processed_blood_unit' => new ProcessedBloodUnitResource($this->processed_blood_unit),
             'tested_blood_nit' => new TestedBloodUnitResource($this->tested_blood_unit),
-
-
         ];
     }
 

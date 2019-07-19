@@ -26,7 +26,6 @@ class Donation extends JsonResource
 
             'donor' => new UserResource($this->donor),
             'donation_donor_history' => new DonationDonorHistoryResource($this->donation_donor_history),
-            'donation_list' => new DonationListResource($this->donation_list)
         ];
     }
 }

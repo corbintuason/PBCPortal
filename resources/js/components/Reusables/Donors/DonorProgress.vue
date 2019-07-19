@@ -32,11 +32,10 @@
           </table>
         </div>
       </div>
-
       <div class="row-title">{{mbd.name}}</div>
       <div class="row-sub-category">Donation Progress</div>
 
-      <div v-if="donation_progress!=null" class="row">
+      <div class="row">
         <div class="col-md-12">
           <table class="table table-sm table-striped">
             <thead>
@@ -48,29 +47,43 @@
             <tbody>
               <tr>
                 <td>
-                  <a href="#" @click.prevent="openDonorHistory" :donation="donation_progress">Donor History</a>
+                  <a
+                    href="#"
+                    @click.prevent="openDonorHistory"
+                    :donation="donation_progress"
+                  >Donor History</a>
                 </td>
                 <th>
                   <i class="fas fa-check-square green"></i>
                 </th>
               </tr>
               <tr>
-                <td>Blood Unit</td>
-                <th>
+                <td>
+                  <a
+                    href="#"
+                    @click.prevent="openBloodUnit"
+                    :donation="donation_progress"
+                  >Blood Unit</a>
+                </td>
+                <td>
                   <i class="fas fa-check-square green"></i>
-                </th>
+                </td>
               </tr>
             </tbody>
           </table>
         </div>
+        
       </div>
-      <donor-history :donor="donor" :donation="donation_progress"></donor-history>
+      <donor-history :donor="donor" :donation="donation"></donor-history>
+      <donor-blood-unit :donor="donor" :donation="donation"></donor-blood-unit>
     </div>
   </b-modal>
+  
 </template>
 
 <script>
 import donorHistory from "C:/xampp/htdocs/PBCPortal/resources/js/components/Reusables/Donors/DonorHistory.vue";
+import donorBloodUnit from "C:/xampp/htdocs/PBCPortal/resources/js/components/Reusables/Donors/DonorBloodUnit.vue";
 
 export default {
   data() {
@@ -80,27 +93,26 @@ export default {
   },
   props: {
     donor: Object,
-    mbd: Object
+    mbd: Object,
+    donation: Object,
   },
   components: {
-    "donor-history": donorHistory
+    "donor-history": donorHistory,
+    "donor-blood-unit": donorBloodUnit
   },
 
   methods: {
     openDonorHistory() {
       this.$bvModal.show("donor-history");
     },
-    checkDonationProgress() {
-      var mbd_id = this.mbd.id;
-      
-      var donation = this.mbd.donation_list.find(donation_list => donation_list.donation.donor_id == this.donor.id);
-      console.log(donation);
-      this.donation_progress = donation;
-    }
+    openBloodUnit() {
+      this.$bvModal.show("donor-blood-unit");
+    },
+  
   },
 
   mounted() {
-    this.checkDonationProgress();
+    
   }
 };
 </script>

@@ -16,10 +16,8 @@ class CreateMBDsTable extends Migration
         Schema::create('mbds', function (Blueprint $table) {
             $table->bigIncrements('id');
             $table->string('name');
-            $table->date('start_date');
-            $table->date('end_date');
-            $table->string('category');
-
+            $table->string('status');
+            
             // Foreign Keys
             $table->integer('agency_id');
             $table->timestamps();

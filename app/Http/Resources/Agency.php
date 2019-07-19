@@ -19,8 +19,6 @@ class Agency extends JsonResource
             'name' => $this->name,
             'email' => $this->email,
             'address' => $this->address,
-
-            'mbd' => $this->mbd
         ];
     }
 }
