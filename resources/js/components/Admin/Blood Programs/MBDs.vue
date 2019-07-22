@@ -12,22 +12,6 @@
               <div class="card">
                 <div class="card-header">
                   <div class="card-title">Requested MBDs</div>
-                  <div class="card-tools">
-                    <div class="btn-group" role="group">
-                      <button
-                        type="button"
-                        class="btn btn-light"
-                        data-toggle="modal"
-                        data-target="#fullSchedule"
-                      >See Schedules</button>
-                      <button
-                        type="button"
-                        class="btn btn-dark"
-                        data-toggle="modal"
-                        data-target="#addProgram"
-                      >Add Program</button>
-                    </div>
-                  </div>
                 </div>
                 <div class="card-body">
                   <mbd-requests> </mbd-requests>
@@ -42,6 +26,14 @@
                 <div class="card-header">
                   <div class="card-title"> Approved MBDs</div>
                   <div class="card-tools">
+                    <div class="btn-group" role="group">
+                      <button
+                        type="button"
+                        class="btn btn-dark"
+                        data-toggle="modal"
+                        @click="openAddMBD"
+                      >Add MBD</button>
+                    </div>
                   </div>
                 </div>
                 <div class="card-body">
@@ -50,18 +42,17 @@
               </div>
             </div>
           </div>
-
-          <!-- Modal for seeing Full Schedule -->
-          
         </div>
       </div>
     </div>
+    <add-mbd :agencies="agencies"> </add-mbd>
   </div>
 </template>
 
 <script>
 import mbdRequests from "../../Reusables/MBDs/MBDRequests";
-import mbdApproved from "../../Reusables/MBDs/MBDApproved"
+import mbdApproved from "../../Reusables/MBDs/MBDApproved";
+import addMBD from "../../Reusables/MBDs/AddMBD";
 
 export default {
   data() {
@@ -75,9 +66,13 @@ export default {
   },
   components:{
     "mbd-requests": mbdRequests,
-    "mbd-approved": mbdApproved
+    "mbd-approved": mbdApproved,
+    "add-mbd": addMBD,
   },
   methods: {
+    openAddMBD(){
+      this.$bvModal.show('add-mbd');
+    },
     /** LOAD METHODS */
     loadAgencies() {
       axios

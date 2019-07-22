@@ -17,9 +17,27 @@ Route::middleware('auth:api')->get('/user', function (Request $request) {
     return $request->user();
 });
 
+Route::post('/register', 'API\DonorLoginController@register');
+Route::post('/login', 'API\DonorLoginController@login');
+
+
 Route::apiResources([
     'user' => 'API\UserController'
 ]);
+
+Route::apiResources([
+    'manpower_list' => 'API\ManpowerListController'
+]);
+
+Route::apiResources([
+    'material' => 'API\MaterialController'
+]);
+
+
+Route::apiResources([
+    'material_list' => 'API\MaterialListController'
+]);
+
 
 Route::apiResources([
     'admin' => 'API\AdminController'
@@ -29,7 +47,7 @@ Route::apiResources([
     'donation_donor_history' => 'API\DonationDonorHistoryController'
 ]);
 
-
+Route::get('profile', 'API\UserController@profile');
 // Route::apiResources([
 //     'donation' => 'API\DonationController'
 // ]);

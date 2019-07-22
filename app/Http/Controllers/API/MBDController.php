@@ -40,10 +40,7 @@ class MBDController extends Controller
     {
         return MBD::create([
             'name' => $request['name'],
-            'start_date' => $request['start_date'],
-            'end_date' => $request['end_date'],
-            'category' => $request['category'],
-            
+            'status' => $request['status'],
             'agency_id' => $request['agency_id']
         ]);
     }

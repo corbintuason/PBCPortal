@@ -13,7 +13,24 @@ class DatabaseSeeder extends Seeder
     {
         $this->call(AdminsTableSeeder::class);
         $this->call(UsersTableSeeder::class);
-        factory(App\Admin::class, 10)->create();
+        $this->call(MaterialsTableSeeder::class);
+        factory(App\Admin::class, 5)->create([
+            'job_title' => 'Doctor'
+        ]);
+
+        factory(App\Admin::class, 5)->create([
+            'job_title' => 'BCU'
+        ]);
+
+        factory(App\Admin::class, 5)->create([
+            'job_title' => 'Medical Technologist'
+        ]);
+
+        factory(App\Admin::class, 5)->create([
+            'job_title' => 'DRO'
+        ]);
+        
+
         factory(App\User::class, 10)->create();
         $agencies = $this->call(AgenciesTableSeeder::class);
 
@@ -30,25 +47,25 @@ class DatabaseSeeder extends Seeder
         }
 
         $mbds = factory(App\MBD::class, 3)->create(['status' => 'Requested']);
-        foreach($mbds as $mbd){
-            factory(App\MBDSchedule::class)->create([
-                'mbd_id' => $mbd->id,
-                'date' => "2019-07-11",
-                'start_time' => "10:00:00",
-                'end_time' => "13:00:00",
-                'venue' => "Connon",
-                'expectedDonors' => 5
-            ]);
-        }
-        foreach($mbds as $mbd){
-            $mbd_donations = factory(App\Donation::class, 3)->create();
-            foreach($mbd_donations as $mbd_donation){
-                factory(App\DonationList::class)->create([
-                    'mbd_id' => $mbd->id,
-                    'donation_id' => $mbd_donation->id]);
-            }
+        // foreach($mbds as $mbd){
+        //     factory(App\MBDSchedule::class)->create([
+        //         'mbd_id' => $mbd->id,
+        //         'date' => "2019-07-11",
+        //         'start_time' => "10:00:00",
+        //         'end_time' => "13:00:00",
+        //         'venue' => "Connon",
+        //         'expectedDonors' => 5
+        //     ]);
+        // }
+        // foreach($mbds as $mbd){
+        //     $mbd_donations = factory(App\Donation::class, 3)->create();
+        //     foreach($mbd_donations as $mbd_donation){
+        //         factory(App\DonationList::class)->create([
+        //             'mbd_id' => $mbd->id,
+        //             'donation_id' => $mbd_donation->id]);
+        //     }
             
-        }
+        // }
 
         $donations = App\Donation::all();
         foreach($donations as $donation){

@@ -21,8 +21,12 @@ class AdminController extends Controller
 
         $query = Admin::query();
         $email = $request->get('email');
+        $job_title = $request->get('job_title');
         if($email){
             $query->where('email', $email);
+        }
+        if($job_title){
+            $query->where('job_title', $job_title);
         }
     
         return new AdminCollection($query->get());

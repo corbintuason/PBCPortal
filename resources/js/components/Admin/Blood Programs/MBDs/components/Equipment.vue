@@ -1,6 +1,6 @@
 <template>
 <div>
-    equipment
+    
 </div>
 </template>
 
@@ -10,6 +10,9 @@ export default{
         return{
 
         };
+    },
+    props:{
+        mbd: Object
     },
     created(){
 

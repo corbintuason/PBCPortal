@@ -50,7 +50,7 @@ scratch. This page gets rid of all links and provides the needed markup only.
             <li class="nav-item has-treeview">
               <a href="#" class="nav-link">
                 <img src = "img/admin.png">
-                <p> Ree <i class="right fas fa-angle-left"></i>
+                <p> {{Auth::user()->last_name}}, {{Auth::user()->first_name}} <i class="right fas fa-angle-left"></i>
                 </p> 
               </a>
               <ul class="nav nav-treeview">
@@ -71,7 +71,7 @@ scratch. This page gets rid of all links and provides the needed markup only.
                     <i class="fa fa-circle-o nav-icon"></i>
                     <p> Logout </p>
                   </a> --}}
-                  <a class="nav-link" href="{{ route('logout') }}"
+                  <a class="nav-link" href="{{ route('admin.logout') }}"
                   onclick="event.preventDefault();
                                 document.getElementById('logout-form').submit();">
                    <i class="fa fa-circle-o nav-icon"></i>

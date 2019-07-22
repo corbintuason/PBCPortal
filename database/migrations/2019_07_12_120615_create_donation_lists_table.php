@@ -17,6 +17,7 @@ class CreateDonationListsTable extends Migration
             $table->bigIncrements('id');
             $table->integer('donation_id')->nullable()->unsigned();
             $table->integer('mbd_id')->nullable()->unsigned();
+            $table->integer('mbd_schedule_id')->nullable()->unsigned();
             $table->timestamps();
         });
     }

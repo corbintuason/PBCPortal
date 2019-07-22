@@ -25,4 +25,6 @@ class Agency extends Model
      public function donors(){
           return $this->hasMany(User::class, 'donor_id');
      }
+
+     
 }

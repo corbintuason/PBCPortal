@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Auth;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 use Auth;
+use Session;
 
 class AdminLoginController extends Controller
 {
@@ -31,5 +32,11 @@ class AdminLoginController extends Controller
             return $request->email;
             return redirect()->back()->withInput($request->only('email', 'remember'));
         }
+    }
+    public function logout(Request $request){
+     
+        Auth::logout();
+        Session::flush();
+        return redirect()->intended(route('home'));
     }
 }

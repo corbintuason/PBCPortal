@@ -19,7 +19,16 @@ class AdminsTableSeeder extends Seeder
                 'job_title' => 'Super Admin',
                 'email' => 'johncorbintuason@gmail.com',
                 'password' => Hash::make('Googlechrome11!')
-            ]
+            ],
+            [
+                'last_name' => 'Talaver',
+                'first_name' => 'Jeromy',
+                'middle_name' => 'Santos',
+                'job_title' => 'Doctor',
+                'email' => 'jeromytalaver@gmail.com',
+                'password' => Hash::make('jeromytalaver')
+            ],
+            
         ]);
     }
 }

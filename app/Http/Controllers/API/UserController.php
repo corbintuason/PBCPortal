@@ -11,11 +11,19 @@ use Illuminate\Support\Facades\Hash;
 
 class UserController extends Controller
 {
+
+    // public function __construct(){
+    //     $this->middleware('auth:api');
+    // }
     /**
      * Display a listing of the resource.
      *
      * @return \Illuminate\Http\Response
      */
+
+     public function profile(){
+         return auth('api')->user();
+     }
     public function index(Request $request)
     {
 

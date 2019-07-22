@@ -38,12 +38,11 @@ export default {
         //   title: response.name,
         //   date: response.start_date,
         // })
-      axios.get("/api/mbd").then(response => (
-          response.data.data.forEach(mbd => {
+      axios.get("/api/mbd_schedule").then(response => (
+          response.data.data.forEach(mbd_schedule => {
               this.mbd_dates.push({
-                  title: mbd.name,
-                  start: mbd.start_date,
-                  end: mbd.end_date
+                  title: mbd_schedule.mbd.name,
+                  start: mbd_schedule.date,
               })
           })
       ));

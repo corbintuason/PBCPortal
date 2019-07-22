@@ -7,7 +7,7 @@ use App\Agency;
 use App\DonationList;
 use App\Donation;
 use App\MBDSchedule;
-
+use App\ManpowerList;
 class MBD extends Model
 {
      // Primary Key 
@@ -29,14 +29,18 @@ class MBD extends Model
          return \Carbon\Carbon::createFromFormat('Y-m-d H:i:s', $date)->format('Y-m-d');
      }
 
-
      public function agency(){
           return $this->belongsTo(Agency::class);
      }
      public function donation_list(){
           return $this->hasMany(DonationList::class, 'mbd_id');
      }
+     public function manpower_list(){
+          return $this->hasMany(ManpowerList::class, 'mbd_id');
+     }
      public function mbd_schedules(){
           return $this->hasMany(MBDSchedule::class, 'mbd_id');
      }
+
+    
 }

@@ -3,7 +3,7 @@
     <table class="table table-striped">
       <thead>
         <tr>
-          <th>Request ID</th>
+          <th>MBD ID</th>
           <th>Agency</th>
           <th>MBD Name</th>
           <th>Status</th>
@@ -23,12 +23,12 @@
         </tr>
       </tbody>
     </table>
-    <mbd-request :mbd="mbd_request"></mbd-request>
+    <mbd :mbd="mbd_request"></mbd>
   </div>
 </template>
 
 <script>
-import mbdRequest from "./MBDRequest.vue";
+import mbd from "./ShowMBD.vue";
 
 export default {
   data() {
@@ -41,12 +41,12 @@ export default {
     };
   },
   components: {
-    "mbd-request": mbdRequest
+    mbd
   },
   methods: {
     openMBDRequest(mbd) {
         this.mbd_request = mbd;
-      this.$bvModal.show("mbd-request");
+      this.$bvModal.show("show-mbd");
     },
     loadMBDRequests(){
         axios.get("/api/mbd", {
