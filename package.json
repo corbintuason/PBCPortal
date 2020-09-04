@@ -34,7 +34,7 @@
         "sweetalert2": "^8.12.1",
         "vform": "^1.0.1",
         "vue-cli": "^2.9.6",
-        "vue-moment": "^4.0.0",
+        "vue-moment": "^4.1.0",
         "vue-progressbar": "^0.7.5",
         "vue-router": "^3.0.6",
         "vuelidate": "^0.7.4"
